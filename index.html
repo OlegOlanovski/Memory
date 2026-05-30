@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" data-theme="Code vibes theme">
 
 <head>
     <meta charset="UTF-8" />
@@ -7,9 +7,17 @@
     <title>Memory</title>
 </head>
 
-<body>
-    <h1>Start Screen</h1>
-    <a href="./src/subpages/settings.html">Play</a>
+<body class="start-screen">
+    <main>
+        <section class="start-screen-content">
+            <p class="sub-headline">It’s play time.</p>
+            <h1>Ready to Play?</h1>
+
+            <nav class="start-screen-buttons" aria-label="Start game actions">
+                <a href="./src/subpages/settings.html" class="button">Play</a>
+            </nav>
+        </section>
+    </main>
 
     <script type="module" src="/src/main.ts"></script>
 </body>
