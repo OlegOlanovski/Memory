@@ -1,0 +1,42 @@
+@use "variable" as vars;
+@use "../abstract/mixings" as animat;
+@use "../components/fonts" as fonts;
+
+/* BEM  Block Element Modifier*/
+
+/*Block */
+.button {
+  @include animat.fade-top(1.8s, 500px);
+
+  color: var(--color-text);
+  border: none;
+  padding: 25px 70px;
+  cursor: pointer;
+  font-size: 40px;
+  font-family: "red-rose-bold", sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  display: grid;
+  place-items: center;
+}
+
+/*Element */
+.button__icon {
+  margin-left: 25px;
+  &:hover {
+    padding: 25px 80px;
+    scale: 1.1;
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+/*Modifier */
+.button--primary {
+  background-color: var(--color-accent);
+  outline: var(--color-primary-bg) solid 2px;
+
+  &:hover {
+    background-color: var(--color-primary-bg);
+    color: var(--color-text-light);
+  }
+}

@@ -1,0 +1,74 @@
+$breakpoint: (
+  sm: 480px,
+  md: 768px,
+  lg: 1024px,
+);
+
+@mixin respond($sitze) {
+  @media screen and (max-width: map-get($breakpoint, $sitze)) {
+    @content;
+  }
+}
+
+@mixin fex-center() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin fex-left() {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+@mixin fade-in($duration: 0.5s, $distance: 550px) {
+  --fade-distance: #{$distance};
+  opacity: 0;
+  animation: fade-in $duration ease-in-out forwards;
+}
+
+@mixin fade-top($duration: 0.5s, $distance: 550px) {
+  --fade-distance: #{$distance};
+  opacity: 0;
+  animation: fade-top $duration ease-in-out forwards;
+}
+
+@mixin fade-bottom($duration: 0.5s, $distance: 550px) {
+  --fade-distance: #{$distance};
+  opacity: 0;
+  animation: fade-bottom $duration ease-in-out forwards;
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateX(var(--fade-distance));
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-top {
+  from {
+    transform: translateY(var(--fade-distance));
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-bottom {
+  from {
+    transform: translateY(var(--fade-distance));
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
