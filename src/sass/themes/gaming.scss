@@ -1,0 +1,27 @@
+[data-theme="Gaming theme"] {
+  --score-label-display: none;
+  --exit-btn-radius: 8px;
+  --player-name-display: none;
+  --winner-marker-display: none;
+  --winner-confetti-opacity: 0;
+  --gameover-intro-bg: #2d5568;
+  --gameover-title-color: #ff178e;
+  --gameover-scoreboard-bg: #ffffff;
+  --gameover-scoreboard-border: #d3ebf5;
+  --winner-overlay-bg: #2d5568;
+  --winner-subtitle-color: #d7eef7;
+  --card-front-bg: #1a1a2e;
+  --color-primary-bg: rgb(84, 93, 118);
+  --color-secondary: rgb(84, 93, 118);
+  --color-player-bg: rgb(255, 255, 255);
+  --color-button-bg: transparent;
+  --color-button-border: rgb(231, 28, 79);
+  --color-text: rgb(231, 28, 79);
+  --color-text-light: #ffffff;
+  --color-interactive: rgb(231, 28, 79);
+  --theme-section-gradient: linear-gradient(
+    226.04deg,
+    #294f60 19.4%,
+    #2086b4 111.63%
+  );
+}

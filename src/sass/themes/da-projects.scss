@@ -1,0 +1,59 @@
+[data-theme="DA Projects theme"] {
+  --exit-btn-radius: 8px;
+  --player-name-display: none;
+  --score-label-display: none;
+  --winner-marker-display: none;
+  --winner-confetti-opacity: 0;
+  --gameover-intro-bg: #2b7f9d;
+  --gameover-title-color: #ff6a4d;
+  --gameover-scoreboard-bg: #ffffff;
+  --gameover-scoreboard-border: #cde8f2;
+  --winner-overlay-bg: #2b7f9d;
+  --winner-subtitle-color: #e9f8ff;
+  --color-primary-bg: #0f2a3a;
+  --color-secondary: #ffffff;
+  --color-button-bg: rgb(191, 229, 242);
+  --color-button-border: none;
+  --color-text-light: #1e7594;
+  --color-interactive: #1e7594;
+  --theme-section-gradient: linear-gradient(
+    220deg,
+    rgb(191, 229, 242) 35%,
+    rgb(191, 229, 242) 120%
+  );
+
+  .game-header {
+    background: rgb(240, 243, 244);
+    border-radius: 10px;
+  }
+
+  .game-scoreboard {
+    background: #f5f5f5;
+    color: #1e7594;
+  }
+
+  .game-score--blue {
+    color: #2bb1ff;
+  }
+
+  .game-score--orange {
+    color: #ff8c00;
+  }
+
+  .game-current-player {
+    color: #1e7594;
+  }
+
+  .game-grid {
+    background: transparent;
+  }
+
+  .memory-card {
+    background: #1e7594;
+    border-radius: 12px;
+  }
+
+  .memory-card__face--back {
+    background-color: #1e7594;
+  }
+}
