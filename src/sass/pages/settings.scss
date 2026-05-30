@@ -218,3 +218,222 @@ label {
   border-color: rgba(80, 80, 80, 0.713);
   transform: translate(-50%, -50%) scale(0.5);
 }
+
+.conten-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: 2;
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+  padding: 50px 0 20px 0;
+}
+
+.theme-section {
+  @include animat.fade-in();
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 70%;
+  max-width: 800px;
+  height: 560px;
+  border-radius: 16px;
+  background-image: var(--theme-section-gradient);
+  transition: background-image 300ms ease-in-out;
+
+  header {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    transition: background-color 300ms ease-in-out;
+  }
+
+  .current-player {
+    background-color: var(--color-secondary);
+
+    p {
+      color: var(--color-text-light) !important;
+    }
+  }
+
+  .current-player-content-img {
+    padding: 8px;
+    border-radius: 8px;
+
+    &[data-player="Blue"] {
+      background-color: #2bb1ff;
+    }
+
+    &[data-player="Orange"] {
+      background-color: #f58e39;
+    }
+
+    & img {
+      width: 20px;
+      filter: contrast(100%) brightness(0) invert(1);
+    }
+  }
+}
+
+.settings-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  height: 80px;
+  margin-top: auto;
+  width: 100%;
+  max-width: 900px;
+  background-color: rgb(246, 246, 246);
+
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: 3.75rem;
+    list-style: none;
+  }
+
+  &__item {
+    font-family: fonts.$font-family;
+    font-size: 18px;
+    color: var(--color-text);
+    min-width: auto;
+    max-width: 230px;
+  }
+
+  &__divider {
+    height: 45px;
+    width: 5px;
+    background-color: yellow;
+    transform: rotate(12deg);
+  }
+
+  &__start {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    font-size: 18px;
+    font-family: "Almarai Bold", sans-serif;
+    background-color: var(--color-accent);
+    color: var(--color-text);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+
+    & img {
+      width: 20px;
+      height: auto;
+    }
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+}
+
+.setting-screen-buttons {
+  @include animat.fade-in(1s);
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  transition: all 0.3s ease;
+  background-color: rgb(240, 234, 110);
+  cursor: pointer;
+  padding: 0px 0px;
+
+  &:hover {
+    padding: 3px 7px;
+    transition: all 0.3s ease;
+  }
+
+  & .button-icons {
+    width: 50px;
+    height: auto;
+    top: 52%;
+    position: fixed;
+  }
+
+  & .button-icons.--controller {
+    width: 25px;
+    margin: -10px 7.5rem -16px 20px;
+  }
+
+  &:hover .button-icons.button-icons.--controller {
+    transform: rotate(-10deg);
+    transition: all 0.35s ease-in-out;
+  }
+
+  &:has(.button--settings[disabled]) {
+    cursor: default;
+
+    &:hover {
+      padding: 0px 0px;
+    }
+
+    &:hover .button-icons.--controller {
+      transform: none;
+      transition: none;
+    }
+  }
+}
+
+.button--settings {
+  font-size: 20px;
+  padding: 14px 65px;
+  text-decoration: none;
+  font-family: "Red Rose Bold", sans-serif;
+  font-weight: fonts.$font-weight-bold;
+  color: var(--color-text);
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.theme-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+
+  .preview-card {
+    position: absolute;
+    width: 160px;
+    height: auto;
+    object-fit: cover;
+    transition:
+      transform 300ms ease,
+      opacity 300ms ease;
+
+    &--1 {
+      transform: rotate(-6deg) translate(-80px, -80px);
+      z-index: 2;
+    }
+
+    &--2 {
+      transform: rotate(6deg) translate(30px, -55px);
+      z-index: 1;
+      opacity: 0.85;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .settings-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .settings-back-button {
+    font-size: 18px;
+    padding: 10px 18px;
+  }
+}
