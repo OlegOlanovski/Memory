@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="Code vibes theme">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+  <script type="module" crossorigin src="/assets/settings-DuUGiLx2.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/main-Dm0c06KA.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-GTlR8jB2.css">
+</head>
+
+<body>
+    <main class="settings-main" aria-label="Settings page main content">
+        <section class="settings-header" aria-label="Settings page header">
+            <h1 class="setting-h1">Settings</h1>
+            <a href="./game.html" class="settings-back-button" data-back-to-game hidden>
+                Back to game
+            </a>
+        </section>
+
+        <section class="settings-content">
+            <aside class="sidebar">
+
+                <section aria-label="Theme selection">
+                    <div class="sub-headline-content">
+                        <p class="headline">Game Themes</p>
+                    </div>
+                    <fieldset class="input-content">
+                        <legend class="visually-hidden">Game themes</legend>
+                        <div class="input-container">
+                            <input type="radio" name="theme-radio-btn" id="theme-radio-btn-1" value="Code vibes theme">
+                            <label for="theme-radio-btn-1">Code vibes theme</label>
+                        </div>
+                        <div class="input-container">
+                            <input type="radio" name="theme-radio-btn" id="theme-radio-btn-2" value="Gaming theme">
+                            <label for="theme-radio-btn-2">Gaming theme</label>
+                        </div>
+                        <div class="input-container">
+                            <input type="radio" name="theme-radio-btn" id="theme-radio-btn-3" value="DA Projects theme">
+                            <label for="theme-radio-btn-3">DA Projects theme</label>
+                        </div>
+                    </fieldset>
+                </section>
+
+                <section aria-label="Player selection">
+                    <div class="sub-headline-content">
+                        <p class="headline">Choose player</p>
+                    </div>
+                    <fieldset class="input-content">
+                        <legend class="visually-hidden">Choose player</legend>
+                        <div class="input-container">
+                            <input type="radio" name="player-radio-btn" id="player-radio-btn-1" value="Blue">
+                            <label for="player-radio-btn-1">Blue</label>
+                        </div>
+                        <div class="input-container">
+                            <input type="radio" name="player-radio-btn" id="player-radio-btn-2" value="Orange">
+                            <label for="player-radio-btn-2">Orange</label>
+                        </div>
+
+                    </fieldset>
+                </section>
+                <section aria-label="Board size selection">
+                    <div class="sub-headline-content">
+                        <p class="headline">Board size</p>
+                    </div>
+                    <fieldset class="input-content">
+                        <legend class="visually-hidden">Board size</legend>
+                        <div class="input-container">
+                            <input type="radio" name="board-size-radio-btn" id="board-size-radio-btn-1" value="16">
+                            <label for="board-size-radio-btn-1">16</label>
+                        </div>
+                        <div class="input-container">
+                            <input type="radio" name="board-size-radio-btn" id="board-size-radio-btn-2" value="24">
+                            <label for="board-size-radio-btn-2">24</label>
+                        </div>
+                        <div class="input-container">
+                            <input type="radio" name="board-size-radio-btn" id="board-size-radio-btn-3" value="34">
+                            <label for="board-size-radio-btn-3">34</label>
+                        </div>
+                    </fieldset>
+                </section>
+            </aside>
+            <section class="conten-right">
+                <div class="theme-section">
+                    <header>
+                        <div class="player-content">
+                            <p class="--label-blue --player-name">Blue</p>
+                            <p class="--label-blue">0</p>
+                            <p class="--label-orange --player-name">Orange</p>
+                            <p class="--label-orange">0</p>
+                        </div>
+                        <div class="current-player">
+                            <p>Current Player: </p>
+                            <div class="current-player-content-img">
+                                <img data-preview-current-player-icon src="" alt="Blue player icon">
+                            </div>
+                        </div>
+                        <div class="button-content">
+                            <div class="preview-exit-btn">
+                                <a href="#" class="button">Exit game</a>
+                            </div>
+                        </div>
+                    </header>
+                    <section id="theme-preview" class="theme-preview">
+                        <img class="preview-card preview-card--2" src="" alt="">
+                        <img class="preview-card preview-card--1" src="" alt="">
+                    </section>
+                </div>
+                <nav class="settings-nav" aria-label="Current settings summary">
+                    <ul class="settings-nav__list">
+                        <li class="settings-nav__item" data-settings-nav="theme">
+                            <span>Theme:</span><span class="settings-nav__value">Code vibes theme</span>
+                        </li>
+                        <li class="settings-nav__divider"></li>
+                        <li class="settings-nav__item" data-settings-nav="player">
+                            <span>Player:</span><span class="settings-nav__value">Blue</span>
+                        </li>
+                        <li class="settings-nav__divider"></li>
+                        <li class="settings-nav__item" data-settings-nav="board-size">
+                            <span>Board:</span><span class="settings-nav__value">16</span>
+                        </li>
+                    </ul>
+                    <section class="setting-screen-buttons" aria-label="Start game action">
+                        <a href="./game.html" class="button--settings" data-start-button disabled>Play</a>
+                    </section>
+                </nav>
+            </section>
+        </section>
+    </main>
+
+</body>
+
+</html>

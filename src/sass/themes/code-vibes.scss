@@ -1,0 +1,35 @@
+[data-theme="Code vibes theme"] {
+  --player-name-display: block;
+  --winner-marker-display: block;
+  --winner-confetti-opacity: 0.55;
+  --gameover-intro-bg: #303131;
+  --gameover-title-color: rgb(73, 186, 165);
+  --gameover-scoreboard-bg: color-mix(
+    in srgb,
+    rgb(53, 82, 77) 68%,
+    #6cb0a9 32%
+  );
+  --gameover-scoreboard-border: color-mix(
+    in srgb,
+    rgb(53, 82, 77) 78%,
+    #9ee4d7 22%
+  );
+  --winner-overlay-bg: #2f2f2f;
+  --winner-subtitle-color: #ffffff;
+  --color-primary-bg: #303131;
+  --color-secondary: rgb(53, 82, 77);
+  --color-button-bg: rgb(73, 186, 165, 0.5);
+  --color-button-border: rgb(248, 246, 246);
+  --color-player-bg: rgb(73, 186, 165, 0.5);
+  --color-text: #333333;
+  --color-text-light: #ffffff;
+  --color-interactive: rgb(73, 186, 165);
+  --settings-back-button-bg: #35524d;
+  --settings-back-button-border: #9ee4d7;
+  --settings-back-button-text: #ffffff;
+  --theme-section-gradient: linear-gradient(
+    190deg,
+    rgb(48, 49, 49, 1) 40%,
+    rgb(109, 109, 109, 1) 100%
+  );
+}
