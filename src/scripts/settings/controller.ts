@@ -238,12 +238,8 @@ export function initSettings() {
   }
 
   initBackToGameButton();
+  const initialSelection = getInitialSelection();
+  applyInitialSelection(initialSelection);
   bindSettingsListeners();
-  updateSettingsNavFromInputs();
   updateStartButtonState();
-
-  if (shouldShowBackToGameButton()) {
-    const initialSelection = getInitialSelection();
-    applyInitialSelection(initialSelection);
-  }
 }

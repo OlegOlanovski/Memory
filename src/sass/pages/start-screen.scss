@@ -8,7 +8,6 @@
   flex-direction: column;
   gap: 2rem;
   background-color: vars.$primary-color-bg;
-
   > img {
     position: absolute;
     left: 0;
@@ -24,6 +23,7 @@
   flex-direction: column;
   align-items: center;
   height: 100vh;
+  width: 991px;
 
   & .sub-headline {
     font-size: 48px;
@@ -32,6 +32,17 @@
     font-weight: fonts.$font-weight-light;
     color: var(--color-text-light);
     font-family: "Almarai Regular", sans-serif;
+    margin: 10px 0 0 0;
+  }
+  & h1 {
+    margin: 0;
+    width: 991px;
+    font-size: 140px;
+    line-height: 175px;
+    font-family: "red-rose-bold", sans-serif;
+    font-weight: 700;
+    color: var(--color-text-light);
+    white-space: nowrap;
   }
 }
 
@@ -49,7 +60,6 @@
     padding: 0 7px;
     transition: all 0.3s ease;
   }
-
   & .button-icons {
     width: 50px;
     height: auto;
@@ -74,7 +84,6 @@
     margin: -9px 0 -9px 11.3rem;
     transition: all 0.35s ease-in-out;
   }
-
   &:hover .button-icons.button-icons.--controller {
     transform: rotate(-25deg);
     transition: all 0.35s ease-in-out;
