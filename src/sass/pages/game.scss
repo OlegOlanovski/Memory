@@ -1,0 +1,211 @@
+@use "../components/fonts" as fonts;
+
+.game-page {
+  --memory-card-back-image: url("/themes/code-vibes-card-1.svg");
+  min-height: 100vh;
+  background: radial-gradient(
+    circle at 20% 10%,
+    #5a5a5a 0,
+    #2f2f2f 42%,
+    #1d1d1d 100%
+  );
+  color: var(--color-text-light);
+}
+
+.game-layout {
+  width: min(1120px, 94vw);
+  margin: 2rem auto;
+}
+
+.game-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 18px;
+  background-image: var(--theme-section-gradient);
+}
+
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-secondary) 70%, #111 30%);
+}
+
+.game-scoreboard {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-secondary) 68%, #6cb0a9 32%);
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 78%, #9ee4d7 22%);
+}
+
+.game-score {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: "Almarai Bold", sans-serif;
+  font-size: 16px;
+  line-height: 1;
+
+  span,
+  strong {
+    line-height: 1;
+  }
+
+  .score-label {
+    display: var(--score-label-display, block);
+  }
+
+  img {
+    width: 20px;
+    height: auto;
+  }
+}
+
+.game-score--blue {
+  color: #2bb1ff;
+}
+
+.game-score--orange {
+  color: #f58e39;
+}
+
+.game-current-player {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 200px;
+  font-family: "Almarai Bold", sans-serif;
+
+  img {
+    width: 20px;
+    height: auto;
+  }
+
+  [data-current-player-name] {
+    display: var(--player-name-display, block);
+  }
+}
+
+.game-status {
+  font-family: "Almarai Regular", sans-serif;
+  font-size: 1rem;
+  min-height: 1.5rem;
+}
+
+.memory-content {
+  display: flex;
+  justify-content: center;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  padding: 0.5rem;
+  width: max-content;
+  background: color-mix(in srgb, var(--color-secondary) 70%, #111 30%);
+}
+
+.memory-card {
+  position: relative;
+  padding: 0;
+  width: 120px;
+  height: 120px;
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 75%, #ffffff 25%);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  background: transparent;
+  perspective: 800px;
+  transform-style: preserve-3d;
+  transition: opacity 180ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &[data-state="revealed"] .memory-card__inner,
+  &[data-state="matched"] .memory-card__inner {
+    transform: rotateY(180deg);
+  }
+
+  &[data-state="matched"] {
+    opacity: 0.65;
+  }
+}
+
+.memory-card__inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+  transition: transform 240ms ease;
+}
+
+.memory-card__face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.memory-card__face--back {
+  transform: rotateY(0deg);
+  background-color: color-mix(
+    in srgb,
+    var(--color-interactive) 60%,
+    #ffffff 30%
+  );
+  background-image: var(--memory-card-back-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.memory-card__image--back {
+  border-radius: 8px;
+}
+
+.memory-card__face--front {
+  position: relative;
+  transform: rotateY(180deg);
+  overflow: hidden;
+  background: var(
+    --card-front-bg,
+    color-mix(in srgb, var(--color-secondary) 70%, #fff 30%)
+  );
+}
+
+.memory-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.memory-card__fallback {
+  font-family: "Red Rose Bold", sans-serif;
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+}
