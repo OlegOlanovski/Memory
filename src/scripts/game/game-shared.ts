@@ -1,7 +1,13 @@
 const BASE = import.meta.env.BASE_URL;
 
+/**
+ * Allowed player identifiers used across the game flow.
+ */
 export type Player = "Blue" | "Orange";
 
+/**
+ * Runtime model for a single memory card.
+ */
 export interface CardModel {
   id: number;
   pairId: number;
@@ -9,6 +15,9 @@ export interface CardModel {
   state: "hidden" | "revealed" | "matched";
 }
 
+/**
+ * Serialized game state stored between page navigations.
+ */
 export interface GameStateSnapshot {
   theme: string;
   boardSize: number;
@@ -19,85 +28,175 @@ export interface GameStateSnapshot {
   statusText: string;
 }
 
-export const gameRoot = document.querySelector(
+/**
+ * Root element for the game page.
+ */
+export const GAME_ROOT = document.querySelector(
   ".game-page"
 ) as HTMLElement | null;
-export const boardElement = document.querySelector(
+/**
+ * Board container that renders all memory cards.
+ */
+export const BOARD_ELEMENT = document.querySelector(
   "[data-game-grid]"
 ) as HTMLElement | null;
-export const statusElement = document.querySelector(
+/**
+ * Status text element that describes the current turn result.
+ */
+export const STATUS_ELEMENT = document.querySelector(
   "[data-game-status]"
 ) as HTMLElement | null;
-export const currentPlayerIconElement = document.querySelector(
+/**
+ * Current player icon in the game header.
+ */
+export const CURRENT_PLAYER_ICON_ELEMENT = document.querySelector(
   "[data-current-player-icon]"
 ) as HTMLImageElement | null;
-export const currentPlayerNameElement = document.querySelector(
+/**
+ * Current player name in the game header.
+ */
+export const CURRENT_PLAYER_NAME_ELEMENT = document.querySelector(
   "[data-current-player-name]"
 ) as HTMLElement | null;
-export const blueScoreElement = document.querySelector(
+/**
+ * Score value element for the blue player.
+ */
+export const BLUE_SCORE_ELEMENT = document.querySelector(
   '[data-score="Blue"]'
 ) as HTMLElement | null;
-export const orangeScoreElement = document.querySelector(
+/**
+ * Score value element for the orange player.
+ */
+export const ORANGE_SCORE_ELEMENT = document.querySelector(
   '[data-score="Orange"]'
 ) as HTMLElement | null;
-export const blueScoreIconElement = document.querySelector(
+/**
+ * Score icon element for the blue player.
+ */
+export const BLUE_SCORE_ICON_ELEMENT = document.querySelector(
   '[data-score-icon="Blue"]'
 ) as HTMLImageElement | null;
-export const orangeScoreIconElement = document.querySelector(
+/**
+ * Score icon element for the orange player.
+ */
+export const ORANGE_SCORE_ICON_ELEMENT = document.querySelector(
   '[data-score-icon="Orange"]'
 ) as HTMLImageElement | null;
-export const gameoverIntroOverlay = document.querySelector(
+/**
+ * Intro overlay shown before the final game-over result.
+ */
+export const GAMEOVER_INTRO_OVERLAY = document.querySelector(
   "[data-gameover-intro]"
 ) as HTMLElement | null;
-export const gameoverBlueScoreIconElement = document.querySelector(
+/**
+ * Blue score icon shown in the game-over overlay.
+ */
+export const GAMEOVER_BLUE_SCORE_ICON_ELEMENT = document.querySelector(
   '[data-gameover-score-icon="Blue"]'
 ) as HTMLImageElement | null;
-export const gameoverOrangeScoreIconElement = document.querySelector(
+/**
+ * Orange score icon shown in the game-over overlay.
+ */
+export const GAMEOVER_ORANGE_SCORE_ICON_ELEMENT = document.querySelector(
   '[data-gameover-score-icon="Orange"]'
 ) as HTMLImageElement | null;
-export const gameoverBlueScore = document.querySelector(
+/**
+ * Blue score value shown in the game-over overlay.
+ */
+export const GAMEOVER_BLUE_SCORE = document.querySelector(
   '[data-gameover-score="Blue"]'
 ) as HTMLElement | null;
-export const gameoverOrangeScore = document.querySelector(
+/**
+ * Orange score value shown in the game-over overlay.
+ */
+export const GAMEOVER_ORANGE_SCORE = document.querySelector(
   '[data-gameover-score="Orange"]'
 ) as HTMLElement | null;
-export const gameOverOverlay = document.querySelector(
+/**
+ * Final overlay that displays the game result.
+ */
+export const GAME_OVER_OVERLAY = document.querySelector(
   "[data-game-over]"
 ) as HTMLElement | null;
-export const winnerIconElement = document.querySelector(
+/**
+ * Winner icon element for non-draw results.
+ */
+export const WINNER_ICON_ELEMENT = document.querySelector(
   "[data-winner-icon]"
 ) as HTMLImageElement | null;
-export const winnerNameElement = document.querySelector(
+/**
+ * Winner label element in the result overlay.
+ */
+export const WINNER_NAME_ELEMENT = document.querySelector(
   "[data-winner-name]"
 ) as HTMLElement | null;
-export const winnerPawnElement = document.querySelector(
+/**
+ * Winner pawn or trophy image element.
+ */
+export const WINNER_PAWN_ELEMENT = document.querySelector(
   "[data-winner-pawn]"
 ) as HTMLImageElement | null;
-export const winnerDrawIconElement = document.querySelector(
+/**
+ * Draw illustration element in the result overlay.
+ */
+export const WINNER_DRAW_ICON_ELEMENT = document.querySelector(
   "[data-winner-draw-icon]"
 ) as HTMLImageElement | null;
-export const winnerSubtitleElement = document.querySelector(
+/**
+ * Subtitle element above the winner label.
+ */
+export const WINNER_SUBTITLE_ELEMENT = document.querySelector(
   "[data-winner-subtitle]"
 ) as HTMLElement | null;
-export const confettiContainer = document.querySelector(
+/**
+ * Container for animated confetti pieces.
+ */
+export const CONFETTI_CONTAINER = document.querySelector(
   "[data-confetti]"
 ) as HTMLElement | null;
 
+/**
+ * Delay before the main game-over overlay is revealed.
+ */
 export const GAME_OVER_INTRO_MS = 2000;
+/**
+ * Duration the final game-over overlay stays visible before redirect.
+ */
 export const GAME_OVER_DISPLAY_MS = 4000;
+/**
+ * Session storage flag for an unfinished game.
+ */
 export const GAME_IN_PROGRESS_STORAGE_KEY = "memoryGameInProgress";
+/**
+ * Session storage key for the serialized game snapshot.
+ */
 export const GAME_STATE_STORAGE_KEY = "memoryGameState";
-export const defaultTheme = "Code vibes theme";
-export const defaultPlayer: Player = "Blue";
-export const defaultBoardSize = 16;
+/**
+ * Default theme used when no selection is stored.
+ */
+export const DEFAULT_THEME = "Code vibes theme";
+/**
+ * Default player used when no selection is stored.
+ */
+export const DEFAULT_PLAYER: Player = "Blue";
+/**
+ * Default board size used when no valid selection is stored.
+ */
+export const DEFAULT_BOARD_SIZE = 16;
 
-export const defaultPlayerIconMap: Record<Player, string> = {
+/**
+ * Fallback header and score icons for each player.
+ */
+export const DEFAULT_PLAYER_ICON_MAP: Record<Player, string> = {
   Blue: `${BASE}img/label_blue.svg`,
   Orange: `${BASE}img/label2.svg`,
 };
 
-export const playerIconMapByTheme: Record<string, Record<Player, string>> = {
-  "Code vibes theme": defaultPlayerIconMap,
+/**
+ * Theme-specific player icons used in the game UI.
+ */
+export const PLAYER_ICON_MAP_BY_THEME: Record<string, Record<Player, string>> = {
+  "Code vibes theme": DEFAULT_PLAYER_ICON_MAP,
   "Gaming theme": {
     Blue: `${BASE}img/player_blue.png`,
     Orange: `${BASE}img/player-orange.png`,
@@ -108,27 +207,39 @@ export const playerIconMapByTheme: Record<string, Record<Player, string>> = {
   },
 };
 
-export const winnerPawnMap: Record<Player, string> = {
+/**
+ * Fallback winner pawn images for both players.
+ */
+export const WINNER_PAWN_MAP: Record<Player, string> = {
   Blue: `${BASE}img/player_blue.png`,
   Orange: `${BASE}img/player-orange.png`,
 };
 
-export const winnerImageMapByTheme: Record<string, Record<Player, string>> = {
-  "Code vibes theme": winnerPawnMap,
+/**
+ * Theme-specific winner images shown in the result overlay.
+ */
+export const WINNER_IMAGE_MAP_BY_THEME: Record<string, Record<Player, string>> = {
+  "Code vibes theme": WINNER_PAWN_MAP,
   "Gaming theme": {
     Blue: `${BASE}img/pokal.png`,
     Orange: `${BASE}img/pokal.png`,
   },
-  "DA Projects theme": winnerPawnMap,
+  "DA Projects theme": WINNER_PAWN_MAP,
 };
 
-export const cardBackByTheme: Record<string, string> = {
+/**
+ * Theme-specific card back image sources.
+ */
+export const CARD_BACK_BY_THEME: Record<string, string> = {
   "Code vibes theme": `${BASE}themes/code-vibes-card-1.svg`,
   "Gaming theme": `${BASE}themes/gaming-card-1.png`,
   "DA Projects theme": `${BASE}themes/da-projects-card-1.png`,
 };
 
-export const cardFrontByTheme: Record<string, string[]> = {
+/**
+ * Theme-specific card front image sets used to build the deck.
+ */
+export const CARD_FRONT_BY_THEME: Record<string, string[]> = {
   "Code vibes theme": [
     `${BASE}img/theme-img/code-vibes-front-1.png`,
     `${BASE}img/theme-img/code-vibes-front-2.png`,
@@ -186,6 +297,9 @@ export const cardFrontByTheme: Record<string, string[]> = {
   ],
 };
 
+/**
+ * Palette used for confetti pieces on the result screen.
+ */
 export const CONFETTI_COLORS = [
   "#f58e39",
   "#2bb1ff",
@@ -194,6 +308,9 @@ export const CONFETTI_COLORS = [
   "#ffe600",
   "#c44dff",
 ];
+/**
+ * Number of confetti pieces rendered for the celebration effect.
+ */
 export const CONFETTI_COUNT = 60;
 
 interface RuntimeState {
@@ -208,11 +325,14 @@ interface RuntimeState {
   scores: Record<Player, number>;
 }
 
-export const runtime: RuntimeState = {
+/**
+ * Mutable runtime state shared across the game modules.
+ */
+export const RUNTIME: RuntimeState = {
   cards: [] as CardModel[],
-  currentPlayer: defaultPlayer,
-  activeCardBackImage: cardBackByTheme[defaultTheme],
-  activeTheme: defaultTheme,
+  currentPlayer: DEFAULT_PLAYER,
+  activeCardBackImage: CARD_BACK_BY_THEME[DEFAULT_THEME],
+  activeTheme: DEFAULT_THEME,
   lockBoard: false,
   firstCardId: null as number | null,
   secondCardId: null as number | null,

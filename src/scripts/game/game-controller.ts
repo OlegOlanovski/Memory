@@ -1,24 +1,25 @@
 import {
-  blueScoreElement,
-  blueScoreIconElement,
-  boardElement,
-  cardBackByTheme,
-  currentPlayerIconElement,
-  currentPlayerNameElement,
-  defaultPlayerIconMap,
-  defaultTheme,
-  gameRoot,
-  gameoverBlueScoreIconElement,
-  gameoverOrangeScoreIconElement,
-  orangeScoreElement,
-  orangeScoreIconElement,
-  playerIconMapByTheme,
-  runtime,
-  statusElement,
+  BLUE_SCORE_ELEMENT,
+  BLUE_SCORE_ICON_ELEMENT,
+  BOARD_ELEMENT,
+  CARD_BACK_BY_THEME,
+  CURRENT_PLAYER_ICON_ELEMENT,
+  CURRENT_PLAYER_NAME_ELEMENT,
+  DEFAULT_PLAYER_ICON_MAP,
+  DEFAULT_THEME,
+  GAME_ROOT,
+  GAMEOVER_BLUE_SCORE_ICON_ELEMENT,
+  GAMEOVER_ORANGE_SCORE_ICON_ELEMENT,
+  ORANGE_SCORE_ELEMENT,
+  ORANGE_SCORE_ICON_ELEMENT,
+  PLAYER_ICON_MAP_BY_THEME,
+  RUNTIME,
+  STATUS_ELEMENT,
+  type CardModel,
   type GameStateSnapshot,
   type Player,
-  winnerImageMapByTheme,
-  winnerPawnMap,
+  WINNER_IMAGE_MAP_BY_THEME,
+  WINNER_PAWN_MAP,
 } from "./game-shared";
 import {
   createCards,
@@ -35,34 +36,39 @@ import {
   readStoredGameState,
 } from "./game-storage";
 
-const exitGameTriggerElement = document.querySelector(
+const EXIT_GAME_TRIGGER_ELEMENT = document.querySelector(
   "[data-exit-game-trigger]"
 ) as HTMLButtonElement | null;
 
-const exitDialogElement = document.querySelector(
+const EXIT_DIALOG_ELEMENT = document.querySelector(
   "[data-exit-dialog]"
 ) as HTMLDialogElement | null;
 
-const exitDialogCloseElement = document.querySelector(
+const EXIT_DIALOG_CLOSE_ELEMENT = document.querySelector(
   "[data-exit-dialog-close]"
 ) as HTMLButtonElement | null;
 
-const exitDialogConfirmElement = document.querySelector(
+const EXIT_DIALOG_CONFIRM_ELEMENT = document.querySelector(
   "[data-exit-dialog-confirm]"
 ) as HTMLButtonElement | null;
 
 let lastFocusedElement: HTMLElement | null = null;
 
-function applyStoredTheme() {
-  const storedTheme = localStorage.getItem("theme") || defaultTheme;
-  runtime.activeTheme = storedTheme;
+interface TurnCards {
+  firstCard: CardModel;
+  secondCard: CardModel;
+}
+
+function applyStoredTheme(): void {
+  const storedTheme = localStorage.getItem("theme") || DEFAULT_THEME;
+  RUNTIME.activeTheme = storedTheme;
   document.documentElement.setAttribute("data-theme", storedTheme);
-  runtime.activeCardBackImage =
-    cardBackByTheme[storedTheme] || cardBackByTheme[defaultTheme];
+  RUNTIME.activeCardBackImage =
+    CARD_BACK_BY_THEME[storedTheme] || CARD_BACK_BY_THEME[DEFAULT_THEME];
 
   document.documentElement.style.setProperty(
     "--memory-card-back-image",
-    `url('${runtime.activeCardBackImage}')`
+    `url('${RUNTIME.activeCardBackImage}')`
   );
 }
 
@@ -72,80 +78,120 @@ function getInitialPlayer(): Player {
 }
 
 function getPlayerIconsForTheme(theme: string): Record<Player, string> {
-  return playerIconMapByTheme[theme] ?? defaultPlayerIconMap;
+  return PLAYER_ICON_MAP_BY_THEME[theme] ?? DEFAULT_PLAYER_ICON_MAP;
 }
 
 function getPlayerIcon(player: Player): string {
-  const icons = getPlayerIconsForTheme(runtime.activeTheme);
-  return icons[player] ?? defaultPlayerIconMap[player];
+  const icons = getPlayerIconsForTheme(RUNTIME.activeTheme);
+  return icons[player] ?? DEFAULT_PLAYER_ICON_MAP[player];
 }
 
 function getWinnerImage(player: Player): string {
-  const images = winnerImageMapByTheme[runtime.activeTheme] ?? winnerPawnMap;
-  return images[player] ?? winnerPawnMap[player];
+  const images = WINNER_IMAGE_MAP_BY_THEME[RUNTIME.activeTheme] ?? WINNER_PAWN_MAP;
+  return images[player] ?? WINNER_PAWN_MAP[player];
 }
 
-function applyThemePlayerIcons() {
-  const playerIcons = getPlayerIconsForTheme(runtime.activeTheme);
+function applyThemePlayerIcons(): void {
+  const playerIcons = getPlayerIconsForTheme(RUNTIME.activeTheme);
 
-  if (blueScoreIconElement) {
-    blueScoreIconElement.src = playerIcons.Blue;
-    blueScoreIconElement.alt = "Blue marker";
+  if (BLUE_SCORE_ICON_ELEMENT) {
+    BLUE_SCORE_ICON_ELEMENT.src = playerIcons.Blue;
+    BLUE_SCORE_ICON_ELEMENT.alt = "Blue marker";
   }
 
-  if (orangeScoreIconElement) {
-    orangeScoreIconElement.src = playerIcons.Orange;
-    orangeScoreIconElement.alt = "Orange marker";
+  if (ORANGE_SCORE_ICON_ELEMENT) {
+    ORANGE_SCORE_ICON_ELEMENT.src = playerIcons.Orange;
+    ORANGE_SCORE_ICON_ELEMENT.alt = "Orange marker";
   }
 
-  if (gameoverBlueScoreIconElement) {
-    gameoverBlueScoreIconElement.src = playerIcons.Blue;
-    gameoverBlueScoreIconElement.alt = "Blue";
+  if (GAMEOVER_BLUE_SCORE_ICON_ELEMENT) {
+    GAMEOVER_BLUE_SCORE_ICON_ELEMENT.src = playerIcons.Blue;
+    GAMEOVER_BLUE_SCORE_ICON_ELEMENT.alt = "Blue";
   }
 
-  if (gameoverOrangeScoreIconElement) {
-    gameoverOrangeScoreIconElement.src = playerIcons.Orange;
-    gameoverOrangeScoreIconElement.alt = "Orange";
-  }
-}
-
-function updateHeaderState() {
-  if (currentPlayerIconElement) {
-    currentPlayerIconElement.src = getPlayerIcon(runtime.currentPlayer);
-    currentPlayerIconElement.alt = `${runtime.currentPlayer} player icon`;
-  }
-
-  if (currentPlayerNameElement) {
-    currentPlayerNameElement.textContent = runtime.currentPlayer;
-  }
-
-  if (blueScoreElement) {
-    blueScoreElement.textContent = String(runtime.scores.Blue);
-  }
-
-  if (orangeScoreElement) {
-    orangeScoreElement.textContent = String(runtime.scores.Orange);
+  if (GAMEOVER_ORANGE_SCORE_ICON_ELEMENT) {
+    GAMEOVER_ORANGE_SCORE_ICON_ELEMENT.src = playerIcons.Orange;
+    GAMEOVER_ORANGE_SCORE_ICON_ELEMENT.alt = "Orange";
   }
 }
 
-function updateStatus(text: string) {
-  if (statusElement) {
-    statusElement.textContent = text;
+function updateHeaderState(): void {
+  if (CURRENT_PLAYER_ICON_ELEMENT) {
+    CURRENT_PLAYER_ICON_ELEMENT.src = getPlayerIcon(RUNTIME.currentPlayer);
+    CURRENT_PLAYER_ICON_ELEMENT.alt = `${RUNTIME.currentPlayer} player icon`;
+  }
+
+  if (CURRENT_PLAYER_NAME_ELEMENT) {
+    CURRENT_PLAYER_NAME_ELEMENT.textContent = RUNTIME.currentPlayer;
+  }
+
+  if (BLUE_SCORE_ELEMENT) {
+    BLUE_SCORE_ELEMENT.textContent = String(RUNTIME.scores.Blue);
+  }
+
+  if (ORANGE_SCORE_ELEMENT) {
+    ORANGE_SCORE_ELEMENT.textContent = String(RUNTIME.scores.Orange);
   }
 }
 
-function switchPlayer() {
-  runtime.currentPlayer = runtime.currentPlayer === "Blue" ? "Orange" : "Blue";
+function updateStatus(text: string): void {
+  if (STATUS_ELEMENT) {
+    STATUS_ELEMENT.textContent = text;
+  }
+}
+
+function switchPlayer(): void {
+  RUNTIME.currentPlayer = RUNTIME.currentPlayer === "Blue" ? "Orange" : "Blue";
   updateHeaderState();
 }
 
-function resetTurnState() {
-  runtime.firstCardId = null;
-  runtime.secondCardId = null;
-  runtime.lockBoard = false;
+function resetTurnState(): void {
+  RUNTIME.firstCardId = null;
+  RUNTIME.secondCardId = null;
+  RUNTIME.lockBoard = false;
 }
 
-function handleMatchedPair(firstCardId: number, secondCardId: number) {
+function finalizeMatchedTurn(firstCard: CardModel, secondCard: CardModel): void {
+  firstCard.state = "matched";
+  secondCard.state = "matched";
+  RUNTIME.scores[RUNTIME.currentPlayer] += 1;
+  RUNTIME.matchedPairs += 1;
+  syncCardElement(firstCard);
+  syncCardElement(secondCard);
+  updateHeaderState();
+  updateStatus(`${RUNTIME.currentPlayer} found a pair.`);
+  resetTurnState();
+}
+
+function shouldShowGameOver(): boolean {
+  return RUNTIME.matchedPairs === RUNTIME.cards.length / 2;
+}
+
+function showMatchedGameOver(): void {
+  showGameOver({
+    clearStoredGameState,
+    getPlayerIcon,
+    getWinnerImage,
+    persistGameState,
+    winnerPawnMap: WINNER_PAWN_MAP,
+  });
+}
+
+function hideCards(firstCard: CardModel, secondCard: CardModel): void {
+  firstCard.state = "hidden";
+  secondCard.state = "hidden";
+  syncCardElement(firstCard);
+  syncCardElement(secondCard);
+}
+
+function finalizeMismatchTurn(firstCard: CardModel, secondCard: CardModel): void {
+  hideCards(firstCard, secondCard);
+  resetTurnState();
+  switchPlayer();
+  persistGameState();
+}
+
+function handleMatchedPair(firstCardId: number, secondCardId: number): void {
   const firstCard = getCardById(firstCardId);
   const secondCard = getCardById(secondCardId);
 
@@ -153,35 +199,17 @@ function handleMatchedPair(firstCardId: number, secondCardId: number) {
     return;
   }
 
-  firstCard.state = "matched";
-  secondCard.state = "matched";
-  runtime.scores[runtime.currentPlayer] += 1;
-  runtime.matchedPairs += 1;
+  finalizeMatchedTurn(firstCard, secondCard);
 
-  syncCardElement(firstCard);
-  syncCardElement(secondCard);
-  updateHeaderState();
-  updateStatus(`${runtime.currentPlayer} found a pair.`);
-
-  runtime.lockBoard = false;
-  runtime.firstCardId = null;
-  runtime.secondCardId = null;
-
-  if (runtime.matchedPairs === runtime.cards.length / 2) {
-    showGameOver({
-      clearStoredGameState,
-      getPlayerIcon,
-      getWinnerImage,
-      persistGameState,
-      winnerPawnMap,
-    });
+  if (shouldShowGameOver()) {
+    showMatchedGameOver();
     return;
   }
 
   persistGameState();
 }
 
-function handleMismatch(firstCardId: number, secondCardId: number) {
+function handleMismatch(firstCardId: number, secondCardId: number): void {
   const firstCard = getCardById(firstCardId);
   const secondCard = getCardById(secondCardId);
 
@@ -190,43 +218,61 @@ function handleMismatch(firstCardId: number, secondCardId: number) {
   }
 
   updateStatus("No match. Switching player.");
-
-  window.setTimeout(() => {
-    firstCard.state = "hidden";
-    secondCard.state = "hidden";
-    syncCardElement(firstCard);
-    syncCardElement(secondCard);
-
-    runtime.firstCardId = null;
-    runtime.secondCardId = null;
-    runtime.lockBoard = false;
-    switchPlayer();
-    persistGameState();
-  }, 700);
+  window.setTimeout(() => finalizeMismatchTurn(firstCard, secondCard), 700);
 }
 
-function evaluateTurn() {
-  if (runtime.firstCardId === null || runtime.secondCardId === null) {
-    return;
+function getTurnCards(): TurnCards | null {
+  if (RUNTIME.firstCardId === null || RUNTIME.secondCardId === null) {
+    return null;
   }
 
-  const firstCard = getCardById(runtime.firstCardId);
-  const secondCard = getCardById(runtime.secondCardId);
+  const firstCard = getCardById(RUNTIME.firstCardId);
+  const secondCard = getCardById(RUNTIME.secondCardId);
 
-  if (!firstCard || !secondCard) {
-    return;
-  }
-
-  if (firstCard.pairId === secondCard.pairId) {
-    handleMatchedPair(runtime.firstCardId, runtime.secondCardId);
-    return;
-  }
-
-  handleMismatch(runtime.firstCardId, runtime.secondCardId);
+  return firstCard && secondCard ? { firstCard, secondCard } : null;
 }
 
-function onCardClick(event: Event) {
-  if (runtime.lockBoard) {
+function isMatchedPair(firstCard: CardModel, secondCard: CardModel): boolean {
+  return firstCard.pairId === secondCard.pairId;
+}
+
+function evaluateTurn(): void {
+  const turnCards = getTurnCards();
+
+  if (!turnCards) {
+    return;
+  }
+
+  const { firstCard, secondCard } = turnCards;
+
+  if (isMatchedPair(firstCard, secondCard)) {
+    handleMatchedPair(firstCard.id, secondCard.id);
+    return;
+  }
+
+  handleMismatch(firstCard.id, secondCard.id);
+}
+
+function revealCard(card: CardModel): void {
+  card.state = "revealed";
+  syncCardElement(card);
+}
+
+function handleFirstTurnCard(card: CardModel): void {
+  RUNTIME.firstCardId = card.id;
+  updateStatus(`${RUNTIME.currentPlayer} is on turn.`);
+  persistGameState();
+}
+
+function handleSecondTurnCard(card: CardModel): void {
+  RUNTIME.secondCardId = card.id;
+  RUNTIME.lockBoard = true;
+  persistGameState();
+  evaluateTurn();
+}
+
+function onCardClick(event: Event): void {
+  if (RUNTIME.lockBoard) {
     return;
   }
 
@@ -236,20 +282,14 @@ function onCardClick(event: Event) {
     return;
   }
 
-  card.state = "revealed";
-  syncCardElement(card);
+  revealCard(card);
 
-  if (runtime.firstCardId === null) {
-    runtime.firstCardId = card.id;
-    updateStatus(`${runtime.currentPlayer} is on turn.`);
-    persistGameState();
+  if (RUNTIME.firstCardId === null) {
+    handleFirstTurnCard(card);
     return;
   }
 
-  runtime.secondCardId = card.id;
-  runtime.lockBoard = true;
-  persistGameState();
-  evaluateTurn();
+  handleSecondTurnCard(card);
 }
 
 function canRestoreGameState(
@@ -258,7 +298,7 @@ function canRestoreGameState(
 ): storedGameState is GameStateSnapshot {
   return (
     storedGameState !== null &&
-    storedGameState.theme === runtime.activeTheme &&
+    storedGameState.theme === RUNTIME.activeTheme &&
     storedGameState.boardSize === boardSize
   );
 }
@@ -266,86 +306,113 @@ function canRestoreGameState(
 function restoreGameState(
   storedGameState: GameStateSnapshot,
   boardSize: number
-) {
-  runtime.currentPlayer = storedGameState.currentPlayer;
-  runtime.cards = storedGameState.cards;
-  runtime.scores.Blue = storedGameState.scores.Blue;
-  runtime.scores.Orange = storedGameState.scores.Orange;
-  runtime.matchedPairs = storedGameState.matchedPairs;
+): void {
+  RUNTIME.currentPlayer = storedGameState.currentPlayer;
+  RUNTIME.cards = storedGameState.cards;
+  RUNTIME.scores.Blue = storedGameState.scores.Blue;
+  RUNTIME.scores.Orange = storedGameState.scores.Orange;
+  RUNTIME.matchedPairs = storedGameState.matchedPairs;
 
   resetTurnState();
   renderBoard(boardSize);
   updateHeaderState();
   updateStatus(
-    storedGameState.statusText || `${runtime.currentPlayer} is on turn.`
+    storedGameState.statusText || `${RUNTIME.currentPlayer} is on turn.`
   );
 }
 
-function startNewGame(boardSize: number) {
-  runtime.currentPlayer = getInitialPlayer();
-  runtime.cards = createCards(boardSize);
-  runtime.matchedPairs = 0;
-  runtime.scores.Blue = 0;
-  runtime.scores.Orange = 0;
+function startNewGame(boardSize: number): void {
+  RUNTIME.currentPlayer = getInitialPlayer();
+  RUNTIME.cards = createCards(boardSize);
+  RUNTIME.matchedPairs = 0;
+  RUNTIME.scores.Blue = 0;
+  RUNTIME.scores.Orange = 0;
 
   resetTurnState();
   renderBoard(boardSize);
   updateHeaderState();
-  updateStatus(`${runtime.currentPlayer} starts.`);
+  updateStatus(`${RUNTIME.currentPlayer} starts.`);
 }
 
-function openExitDialog() {
-  if (!exitDialogElement) {
+function initializeGameState(boardSize: number): void {
+  const storedGameState = readStoredGameState();
+
+  if (canRestoreGameState(storedGameState, boardSize)) {
+    restoreGameState(storedGameState, boardSize);
+    return;
+  }
+
+  startNewGame(boardSize);
+}
+
+function openExitDialog(): void {
+  if (!EXIT_DIALOG_ELEMENT) {
     return;
   }
 
   lastFocusedElement = document.activeElement as HTMLElement | null;
-  exitDialogElement.showModal();
+  EXIT_DIALOG_ELEMENT.showModal();
 }
 
-function closeExitDialog() {
-  if (!exitDialogElement) {
+function closeExitDialog(): void {
+  if (!EXIT_DIALOG_ELEMENT) {
     return;
   }
 
-  exitDialogElement.close();
+  EXIT_DIALOG_ELEMENT.close();
   lastFocusedElement?.focus();
 }
 
-function confirmExitGame() {
+function confirmExitGame(): void {
   window.removeEventListener("beforeunload", persistGameState);
   clearStoredGameState();
   window.location.href = "./settings.html";
 }
 
-function bindExitDialogListeners() {
-  if (
-    !exitGameTriggerElement ||
-    !exitDialogElement ||
-    !exitDialogCloseElement ||
-    !exitDialogConfirmElement
-  ) {
-    return;
-  }
+function bindExitDialogActionButtons(): void {
+  EXIT_GAME_TRIGGER_ELEMENT?.addEventListener("click", openExitDialog);
+  EXIT_DIALOG_CLOSE_ELEMENT?.addEventListener("click", closeExitDialog);
+  EXIT_DIALOG_CONFIRM_ELEMENT?.addEventListener("click", confirmExitGame);
+}
 
-  exitGameTriggerElement.addEventListener("click", openExitDialog);
-  exitDialogCloseElement.addEventListener("click", closeExitDialog);
-  exitDialogConfirmElement.addEventListener("click", confirmExitGame);
-
-  exitDialogElement.addEventListener("click", (event) => {
-    if (event.target === exitDialogElement) {
+function bindExitDialogCloseEvents(): void {
+  EXIT_DIALOG_ELEMENT?.addEventListener("click", (event) => {
+    if (event.target === EXIT_DIALOG_ELEMENT) {
       closeExitDialog();
     }
   });
 
-  exitDialogElement.addEventListener("cancel", (event) => {
+  EXIT_DIALOG_ELEMENT?.addEventListener("cancel", (event) => {
     event.preventDefault();
     closeExitDialog();
   });
 }
 
-export function initGame() {
-  if (!gameRoot || !boardElement) {
+function bindExitDialogListeners(): void {
+  if (
+    !EXIT_GAME_TRIGGER_ELEMENT ||
+    !EXIT_DIALOG_ELEMENT ||
+    !EXIT_DIALOG_CLOSE_ELEMENT ||
+    !EXIT_DIALOG_CONFIRM_ELEMENT
+  ) {
+    return;
+  }
+
+  bindExitDialogActionButtons();
+  bindExitDialogCloseEvents();
+}
+
+function bindGameListeners(): void {
+  window.addEventListener("beforeunload", persistGameState);
+  BOARD_ELEMENT?.addEventListener("click", onCardClick);
+  bindExitDialogListeners();
+}
+
+/**
+ * Boots the game page, restores or creates the board, and binds interactions.
+ */
+export function initGame(): void {
+  if (!GAME_ROOT || !BOARD_ELEMENT) {
     return;
   }
 
@@ -353,16 +420,7 @@ export function initGame() {
   applyThemePlayerIcons();
 
   const boardSize = parseBoardSize(localStorage.getItem("boardSize"));
-  const storedGameState = readStoredGameState();
-
-  if (canRestoreGameState(storedGameState, boardSize)) {
-    restoreGameState(storedGameState, boardSize);
-  } else {
-    startNewGame(boardSize);
-  }
-
+  initializeGameState(boardSize);
   persistGameState();
-  window.addEventListener("beforeunload", persistGameState);
-  boardElement.addEventListener("click", onCardClick);
-  bindExitDialogListeners();
+  bindGameListeners();
 }

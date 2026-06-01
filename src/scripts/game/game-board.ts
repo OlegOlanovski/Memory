@@ -1,10 +1,16 @@
 import {
-  boardElement,
-  cardFrontByTheme,
-  defaultTheme,
-  runtime,
+  BOARD_ELEMENT,
+  CARD_FRONT_BY_THEME,
+  DEFAULT_THEME,
+  RUNTIME,
   type CardModel,
 } from "./game-shared";
+
+const FALLBACK_CARD_ACCENT_BY_THEME: Record<string, string> = {
+  "Code vibes theme": "#49baa5",
+  "Gaming theme": "#e71c4f",
+  "DA Projects theme": "#1e7594",
+};
 
 function shuffle<T>(items: T[]): T[] {
   const copied = [...items];
@@ -17,17 +23,58 @@ function shuffle<T>(items: T[]): T[] {
   return copied;
 }
 
-export function createCards(boardSize: number): CardModel[] {
+function buildFallbackCardLabel(theme: string, index: number): string {
+  return `${theme.replace(" theme", "")} ${index + 1}`;
+}
+
+function buildFallbackCardSvg(accentColor: string, label: string): string {
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+      <rect width="240" height="240" rx="24" fill="#1b1f23" />
+      <rect x="12" y="12" width="216" height="216" rx="18" fill="${accentColor}" opacity="0.18" />
+      <circle cx="120" cy="84" r="38" fill="${accentColor}" opacity="0.92" />
+      <text x="120" y="160" text-anchor="middle" fill="#ffffff" font-size="26" font-family="Arial, sans-serif">
+        ${label}
+      </text>
+    </svg>
+  `;
+}
+
+function createFallbackCardFront(theme: string, index: number): string {
+  const accentColor =
+    FALLBACK_CARD_ACCENT_BY_THEME[theme] ??
+    FALLBACK_CARD_ACCENT_BY_THEME[DEFAULT_THEME];
+  const label = buildFallbackCardLabel(theme, index);
+  const svg = buildFallbackCardSvg(accentColor, label);
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function getCardValues(boardSize: number): string[] {
   const pairCount = boardSize / 2;
-  const cardValues =
-    cardFrontByTheme[runtime.activeTheme] || cardFrontByTheme[defaultTheme];
-  const values = cardValues.slice(0, pairCount);
+  const theme = RUNTIME.activeTheme;
+  const themedValues =
+    CARD_FRONT_BY_THEME[theme] || CARD_FRONT_BY_THEME[DEFAULT_THEME] || [];
+  const values = [...themedValues];
+
+  while (values.length < pairCount) {
+    values.push(createFallbackCardFront(theme, values.length));
+  }
+
+  return values.slice(0, pairCount);
+}
+
+function createCardPair(value: string, pairId: number): Array<Pick<CardModel, "pairId" | "value">> {
+  return [{ pairId, value }, { pairId, value }];
+}
+
+/**
+ * Creates a shuffled card deck for the selected board size.
+ */
+export function createCards(boardSize: number): CardModel[] {
+  const values = getCardValues(boardSize);
 
   return shuffle(
-    values.flatMap((value, pairId) => [
-      { pairId, value },
-      { pairId, value },
-    ])
+    values.flatMap((value, pairId) => createCardPair(value, pairId))
   ).map((card, id) => ({
     id,
     pairId: card.pairId,
@@ -36,12 +83,16 @@ export function createCards(boardSize: number): CardModel[] {
   }));
 }
 
-function getGridColumns(boardSize: number): number {
-  if (boardSize === 34) {
-    return 6;
-  }
+function getRowDistribution(boardSize: number): number[] {
+  const rowCount = Number.isInteger(Math.sqrt(boardSize))
+    ? Math.sqrt(boardSize)
+    : Math.floor(Math.sqrt(boardSize));
+  const baseRowSize = Math.floor(boardSize / rowCount);
+  const remainder = boardSize % rowCount;
 
-  return Math.sqrt(boardSize);
+  return Array.from({ length: rowCount }, (_, index) =>
+    baseRowSize + (index < remainder ? 1 : 0)
+  );
 }
 
 function createCardBackFace(): HTMLSpanElement {
@@ -50,7 +101,7 @@ function createCardBackFace(): HTMLSpanElement {
 
   const cardBackImage = document.createElement("img");
   cardBackImage.className = "memory-card__image memory-card__image--back";
-  cardBackImage.src = runtime.activeCardBackImage;
+  cardBackImage.src = RUNTIME.activeCardBackImage;
   cardBackImage.alt = "Hidden card";
 
   cardBack.appendChild(cardBackImage);
@@ -93,26 +144,51 @@ function createCardButton(card: CardModel): HTMLButtonElement {
   return button;
 }
 
-export function renderBoard(boardSize: number): void {
-  if (!boardElement) {
-    return;
-  }
+function resetBoard(boardElement: HTMLElement): void {
+  boardElement.innerHTML = "";
+  boardElement.removeAttribute("style");
+}
 
-  const grid = boardElement;
-  grid.innerHTML = "";
-  grid.style.gridTemplateColumns = `repeat(${getGridColumns(boardSize)}, minmax(0, 1fr))`;
+function createBoardRow(cards: CardModel[]): HTMLDivElement {
+  const rowElement = document.createElement("div");
+  rowElement.className = "game-grid__row";
+  cards.forEach((card) => rowElement.appendChild(createCardButton(card)));
+  return rowElement;
+}
 
-  runtime.cards.forEach((card) => {
-    grid.appendChild(createCardButton(card));
+function appendBoardRows(boardElement: HTMLElement, boardSize: number): void {
+  let startIndex = 0;
+
+  getRowDistribution(boardSize).forEach((rowSize) => {
+    const cards = RUNTIME.cards.slice(startIndex, startIndex + rowSize);
+    boardElement.appendChild(createBoardRow(cards));
+    startIndex += rowSize;
   });
 }
 
-export function syncCardElement(card: CardModel): void {
+/**
+ * Renders the current runtime deck into the game board container.
+ */
+export function renderBoard(boardSize: number): void {
+  const boardElement = BOARD_ELEMENT;
+
   if (!boardElement) {
     return;
   }
 
-  const cardElement = boardElement.querySelector(
+  resetBoard(boardElement);
+  appendBoardRows(boardElement, boardSize);
+}
+
+/**
+ * Syncs a rendered card button with the current runtime card state.
+ */
+export function syncCardElement(card: CardModel): void {
+  if (!BOARD_ELEMENT) {
+    return;
+  }
+
+  const cardElement = BOARD_ELEMENT.querySelector(
     `[data-card-id="${card.id}"]`
   ) as HTMLButtonElement | null;
 
@@ -124,15 +200,23 @@ export function syncCardElement(card: CardModel): void {
   cardElement.disabled = card.state === "matched";
 }
 
+/**
+ * Returns a card model by id from the current runtime deck.
+ */
 export function getCardById(id: number): CardModel | undefined {
-  return runtime.cards.find((card) => card.id === id);
+  return RUNTIME.cards.find((card) => card.id === id);
 }
 
+function getClickedCardElement(target: HTMLElement): HTMLButtonElement | null {
+  return target.closest(".memory-card") as HTMLButtonElement | null;
+}
+
+/**
+ * Resolves the clicked hidden card from a board click event.
+ */
 export function resolveClickedCard(event: Event): CardModel | null {
   const target = event.target as HTMLElement;
-  const cardElement = target.closest(
-    ".memory-card"
-  ) as HTMLButtonElement | null;
+  const cardElement = getClickedCardElement(target);
 
   if (!cardElement) {
     return null;

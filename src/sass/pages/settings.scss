@@ -119,7 +119,7 @@ h1 {
   }
 }
 
-.sidebar {
+.settings-sidebar {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -219,7 +219,7 @@ label {
   transform: translate(-50%, -50%) scale(0.5);
 }
 
-.conten-right {
+.settings-content-panel {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -282,14 +282,14 @@ label {
   padding: 12px 20px;
   height: 80px;
   margin-top: auto;
-  width: 100%;
+  width: 90%;
   max-width: 900px;
   background-color: rgb(246, 246, 246);
 
   &__list {
     display: flex;
     align-items: center;
-    gap: 2.75rem;
+    gap: 2.2rem;
     list-style: none;
   }
 
@@ -301,11 +301,20 @@ label {
     max-width: 230px;
   }
 
-  &__divider {
-    height: 45px;
-    width: 5px;
-    background-color: yellow;
-    transform: rotate(12deg);
+  &__item + &__item {
+    position: relative;
+    padding-left: 2.2rem;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 8px;
+      height: 56px;
+      background-color: #f0ea6e;
+      transform: translateY(-50%) rotate(12deg);
+    }
   }
 
   &__start {
@@ -356,8 +365,8 @@ label {
   }
 
   & .button-icons.--controller {
-    width: 25px;
-    margin: -10px 7.5rem -16px 20px;
+    width: 24px;
+    margin: -10px 7.5rem -16px 16px;
   }
 
   &:hover .button-icons.button-icons.--controller {
@@ -380,9 +389,10 @@ label {
 }
 
 .button--settings {
+  border: 0;
+  background: transparent;
   font-size: 20px;
-  padding: 14px 65px;
-  text-decoration: none;
+  padding: 11px 46px;
   font-family: "Red Rose Bold", sans-serif;
   font-weight: fonts.$font-weight-bold;
   color: var(--color-text);
@@ -390,7 +400,6 @@ label {
   &[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
-    pointer-events: none;
   }
 }
 

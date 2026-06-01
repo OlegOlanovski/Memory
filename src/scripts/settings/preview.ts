@@ -1,102 +1,116 @@
 import {
-  currentPlayerIcon,
-  currentPlayerIconWrapper,
-  defaultPlayer,
-  defaultPlayerIcons,
-  playerIconsByTheme,
-  playerInputs,
-  previewBluePlayerIcon,
-  previewCard1,
-  previewCard2,
-  previewOrangePlayerIcon,
-  settingsHeader,
-  themePreviewMap,
-  themeSection,
+  CURRENT_PLAYER_ICON,
+  CURRENT_PLAYER_ICON_WRAPPER,
+  DEFAULT_PLAYER,
+  DEFAULT_PLAYER_ICONS,
+  PLAYER_ICONS_BY_THEME,
+  PLAYER_INPUTS,
+  PREVIEW_BLUE_PLAYER_ICON,
+  PREVIEW_CARD_1,
+  PREVIEW_CARD_2,
+  PREVIEW_ORANGE_PLAYER_ICON,
+  THEME_PREVIEW_MAP,
+  THEME_SECTION,
   getCheckedValue,
 } from "./shared";
 
-function applyTheme(theme: string) {
-  if (themeSection) {
-    themeSection.setAttribute("data-theme", theme);
-  }
-
-  if (settingsHeader) {
-    settingsHeader.setAttribute("data-theme", theme);
+function applyTheme(theme: string): void {
+  if (THEME_SECTION) {
+    THEME_SECTION.setAttribute("data-theme", theme);
   }
 }
 
-function applyPreviewImages(theme: string) {
-  const preview = themePreviewMap[theme];
+function applyPreviewImages(theme: string): void {
+  const preview = THEME_PREVIEW_MAP[theme];
   if (!preview) return;
 
-  if (previewCard1) {
-    previewCard1.src = preview.card1;
-    previewCard1.alt = `${theme} card 1`;
+  if (PREVIEW_CARD_1) {
+    PREVIEW_CARD_1.src = preview.card1;
+    PREVIEW_CARD_1.alt = `${theme} card 1`;
   }
 
-  if (previewCard2) {
-    previewCard2.src = preview.card2;
-    previewCard2.alt = `${theme} card 2`;
+  if (PREVIEW_CARD_2) {
+    PREVIEW_CARD_2.src = preview.card2;
+    PREVIEW_CARD_2.alt = `${theme} card 2`;
   }
 }
 
 function getPlayerIconsForTheme(theme: string): Record<string, string> {
-  return playerIconsByTheme[theme] ?? defaultPlayerIcons;
+  return PLAYER_ICONS_BY_THEME[theme] ?? DEFAULT_PLAYER_ICONS;
 }
 
-function updatePreviewScoreIcons(playerIcons: Record<string, string>) {
-  if (previewBluePlayerIcon) {
-    previewBluePlayerIcon.src = playerIcons.Blue;
-    previewBluePlayerIcon.alt = "Blue marker";
+function setPreviewScoreIcon(
+  element: HTMLImageElement | null,
+  src: string,
+  alt: string
+): void {
+  if (!element) {
+    return;
   }
 
-  if (previewOrangePlayerIcon) {
-    previewOrangePlayerIcon.src = playerIcons.Orange;
-    previewOrangePlayerIcon.alt = "Orange marker";
-  }
+  element.src = src;
+  element.alt = alt;
+}
+
+function updatePreviewScoreIcons(playerIcons: Record<string, string>): void {
+  setPreviewScoreIcon(PREVIEW_BLUE_PLAYER_ICON, playerIcons.Blue, "Blue marker");
+  setPreviewScoreIcon(
+    PREVIEW_ORANGE_PLAYER_ICON,
+    playerIcons.Orange,
+    "Orange marker"
+  );
 }
 
 function updateCurrentPreviewPlayerIcon(
   playerIcons: Record<string, string>,
   selectedPlayer: string
-) {
-  if (!currentPlayerIcon) {
+): void {
+  if (!CURRENT_PLAYER_ICON) {
     return;
   }
 
   const currentPlayerIconSrc = playerIcons[selectedPlayer] ?? playerIcons.Blue;
-  currentPlayerIcon.src = currentPlayerIconSrc;
-  currentPlayerIcon.alt = `${selectedPlayer} player icon`;
+  CURRENT_PLAYER_ICON.src = currentPlayerIconSrc;
+  CURRENT_PLAYER_ICON.alt = `${selectedPlayer} player icon`;
 }
 
-function updateCurrentPreviewPlayerWrapper(selectedPlayer: string) {
-  if (currentPlayerIconWrapper) {
-    currentPlayerIconWrapper.setAttribute("data-player", selectedPlayer);
+function updateCurrentPreviewPlayerWrapper(selectedPlayer: string): void {
+  if (CURRENT_PLAYER_ICON_WRAPPER) {
+    CURRENT_PLAYER_ICON_WRAPPER.setAttribute("data-player", selectedPlayer);
   }
 }
 
-function applyPreviewPlayerIcons(theme: string, selectedPlayer: string) {
+function applyPreviewPlayerIcons(theme: string, selectedPlayer: string): void {
   const playerIcons = getPlayerIconsForTheme(theme);
   updatePreviewScoreIcons(playerIcons);
   updateCurrentPreviewPlayerIcon(playerIcons, selectedPlayer);
   updateCurrentPreviewPlayerWrapper(selectedPlayer);
 }
 
-export function applyThemePreview(theme: string) {
+/**
+ * Updates the settings preview cards and player markers for the selected theme.
+ */
+export function applyThemePreview(theme: string): void {
   applyTheme(theme);
   applyPreviewImages(theme);
-  applyPreviewPlayerIcons(theme, getCheckedValue(playerInputs, defaultPlayer));
+  applyPreviewPlayerIcons(theme, getCheckedValue(PLAYER_INPUTS, DEFAULT_PLAYER));
 }
 
+/**
+ * Persists the selected theme and refreshes the preview area.
+ */
 export function setTheme(theme: string): string {
   applyThemePreview(theme);
   localStorage.setItem("theme", theme);
   return theme;
 }
 
+/**
+ * Persists the selected player and updates the preview player marker.
+ */
 export function setPlayer(player: string): string {
   const theme = localStorage.getItem("theme");
-  applyPreviewPlayerIcons(theme ?? defaultPlayer, player);
+  applyPreviewPlayerIcons(theme ?? DEFAULT_PLAYER, player);
 
   localStorage.setItem("player", player);
   return player;

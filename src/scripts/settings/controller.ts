@@ -1,36 +1,32 @@
 import {
+  BACK_TO_GAME_BUTTON,
+  BOARD_SIZE_INPUTS,
+  DEFAULT_BOARD_SIZE,
+  DEFAULT_PLAYER,
+  DEFAULT_THEME,
   GAME_IN_PROGRESS_STORAGE_KEY,
   SettingsSelection,
-  backToGameButton,
-  boardSizeInputs,
-  defaultBoardSize,
-  defaultPlayer,
-  defaultTheme,
   getAvailableThemes,
-  navBoardSizeValue,
-  navPlayerValue,
-  navThemeValue,
-  playerInputs,
-  startButton,
+  NAV_BOARD_SIZE_VALUE,
+  NAV_PLAYER_VALUE,
+  NAV_THEME_VALUE,
+  PLAYER_INPUTS,
+  START_BUTTON,
   syncCheckedInput,
-  themeInputs,
+  THEME_INPUTS,
 } from "./shared";
 import { applyThemePreview, setPlayer, setTheme } from "./preview";
 
-function updateSettingsNavSelection(
-  theme: string | null,
-  player: string | null,
-  boardSize: string | null
-) {
-  if (navThemeValue) {
-    navThemeValue.textContent = theme ?? "—";
+function setNavValue(element: HTMLElement | null, value: string | null): void {
+  if (element) {
+    element.textContent = value ?? "—";
   }
-  if (navPlayerValue) {
-    navPlayerValue.textContent = player ?? "—";
-  }
-  if (navBoardSizeValue) {
-    navBoardSizeValue.textContent = boardSize ?? "—";
-  }
+}
+
+function updateSettingsNavSelection(theme: string | null, player: string | null, boardSize: string | null): void {
+  setNavValue(NAV_THEME_VALUE, theme);
+  setNavValue(NAV_PLAYER_VALUE, player);
+  setNavValue(NAV_BOARD_SIZE_VALUE, boardSize);
 }
 
 function setBoardSize(boardSize: string): string {
@@ -38,13 +34,13 @@ function setBoardSize(boardSize: string): string {
   return boardSize;
 }
 
-function updateSettingsNavFromInputs() {
+function updateSettingsNavFromInputs(): void {
   const checkedTheme =
-    Array.from(themeInputs).find((i) => i.checked)?.value ?? null;
+    Array.from(THEME_INPUTS).find((i) => i.checked)?.value ?? null;
   const checkedPlayer =
-    Array.from(playerInputs).find((i) => i.checked)?.value ?? null;
+    Array.from(PLAYER_INPUTS).find((i) => i.checked)?.value ?? null;
   const checkedBoardSize =
-    Array.from(boardSizeInputs).find((i) => i.checked)?.value ?? null;
+    Array.from(BOARD_SIZE_INPUTS).find((i) => i.checked)?.value ?? null;
 
   updateSettingsNavSelection(checkedTheme, checkedPlayer, checkedBoardSize);
 }
@@ -63,33 +59,30 @@ function getStoredSelectionValue(
 }
 
 function getInitialSelection(): SettingsSelection {
-  const availableThemes = getAvailableThemes();
-  const storedTheme = localStorage.getItem("theme");
-
   return {
-    theme:
-      storedTheme && availableThemes.includes(storedTheme)
-        ? storedTheme
-        : defaultTheme,
-    player: getStoredSelectionValue("player", playerInputs, defaultPlayer),
+    theme: getStoredTheme(),
+    player: getStoredSelectionValue("player", PLAYER_INPUTS, DEFAULT_PLAYER),
     boardSize: getStoredSelectionValue(
       "boardSize",
-      boardSizeInputs,
-      defaultBoardSize
+      BOARD_SIZE_INPUTS,
+      DEFAULT_BOARD_SIZE
     ),
   };
 }
 
-function applyInitialSelection(selection: SettingsSelection) {
-  setTheme(selection.theme);
-  syncCheckedInput(themeInputs, selection.theme);
+function getStoredTheme(): string {
+  const availableThemes = getAvailableThemes();
+  const storedTheme = localStorage.getItem("theme");
 
-  setPlayer(selection.player);
-  syncCheckedInput(playerInputs, selection.player);
+  return storedTheme && availableThemes.includes(storedTheme)
+    ? storedTheme
+    : DEFAULT_THEME;
+}
 
-  setBoardSize(selection.boardSize);
-  syncCheckedInput(boardSizeInputs, selection.boardSize);
-
+function applyInitialSelection(selection: SettingsSelection): void {
+  applyCheckedSelection(THEME_INPUTS, selection.theme, setTheme);
+  applyCheckedSelection(PLAYER_INPUTS, selection.player, setPlayer);
+  applyCheckedSelection(BOARD_SIZE_INPUTS, selection.boardSize, setBoardSize);
   updateSettingsNavSelection(
     selection.theme,
     selection.player,
@@ -97,27 +90,41 @@ function applyInitialSelection(selection: SettingsSelection) {
   );
 }
 
+function applyCheckedSelection(
+  inputs: NodeListOf<HTMLInputElement>,
+  value: string,
+  onSelect: (value: string) => string
+): void {
+  onSelect(value);
+  syncCheckedInput(inputs, value);
+}
+
 function bindInputChange(
   inputs: NodeListOf<HTMLInputElement>,
   onCheckedChange: (value: string) => void
-) {
+): void {
   inputs.forEach((input) => {
-    input.addEventListener("change", () => {
-      if (!input.checked) {
-        return;
-      }
-
-      onCheckedChange(input.value);
-      updateSettingsNavFromInputs();
-      updateStartButtonState();
-    });
+    input.addEventListener("change", () => handleCheckedInput(input, onCheckedChange));
   });
 }
 
-function restoreSelectedThemePreview() {
+function handleCheckedInput(
+  input: HTMLInputElement,
+  onCheckedChange: (value: string) => void
+): void {
+  if (!input.checked) {
+    return;
+  }
+
+  onCheckedChange(input.value);
+  updateSettingsNavFromInputs();
+  updateStartButtonState();
+}
+
+function restoreSelectedThemePreview(): void {
   const selectedTheme =
-    Array.from(themeInputs).find((input) => input.checked)?.value ??
-    defaultTheme;
+    Array.from(THEME_INPUTS).find((input) => input.checked)?.value ??
+    DEFAULT_THEME;
 
   applyThemePreview(selectedTheme);
 }
@@ -125,65 +132,53 @@ function restoreSelectedThemePreview() {
 function bindThemeHoverListeners(
   input: HTMLInputElement,
   previewTheme: () => void
-) {
+): void {
   const inputContainer = input.closest(".input-container");
 
   if (inputContainer) {
-    inputContainer.addEventListener("mouseenter", previewTheme);
-    inputContainer.addEventListener("mouseleave", restoreSelectedThemePreview);
+    bindThemeHoverEvents(inputContainer, previewTheme);
     return;
   }
 
-  input.addEventListener("mouseenter", previewTheme);
-  input.addEventListener("mouseleave", restoreSelectedThemePreview);
+  bindThemeHoverEvents(input, previewTheme);
 }
 
-function bindThemePreviewListener(input: HTMLInputElement) {
-  const previewTheme = () => {
-    applyThemePreview(input.value);
-  };
+function bindThemeHoverEvents(
+  element: Element,
+  previewTheme: () => void
+): void {
+  element.addEventListener("mouseenter", previewTheme);
+  element.addEventListener("mouseleave", restoreSelectedThemePreview);
+}
 
+function bindThemePreviewListener(input: HTMLInputElement): void {
+  const previewTheme = (): void => applyThemePreview(input.value);
   bindThemeHoverListeners(input, previewTheme);
   input.addEventListener("focus", previewTheme);
   input.addEventListener("blur", restoreSelectedThemePreview);
 }
 
-function bindThemePreviewListeners() {
-  themeInputs.forEach((input) => {
+function bindThemePreviewListeners(): void {
+  THEME_INPUTS.forEach((input) => {
     bindThemePreviewListener(input);
   });
 }
 
-function bindStartButtonListener() {
-  if (!startButton) {
+function bindStartButtonListener(): void {
+  if (!START_BUTTON) {
     return;
   }
 
-  const button = startButton;
-
-  button.addEventListener("click", (event) => {
-    if (button.hasAttribute("disabled")) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  START_BUTTON.addEventListener("click", () => {
+    window.location.href = "./game.html";
   });
 }
 
-function bindSettingsListeners() {
+function bindSettingsListeners(): void {
   bindThemePreviewListeners();
-
-  bindInputChange(themeInputs, (value) => {
-    setTheme(value);
-  });
-
-  bindInputChange(playerInputs, (value) => {
-    setPlayer(value);
-  });
-
-  bindInputChange(boardSizeInputs, (value) => {
-    setBoardSize(value);
-  });
-
+  bindInputChange(THEME_INPUTS, setTheme);
+  bindInputChange(PLAYER_INPUTS, setPlayer);
+  bindInputChange(BOARD_SIZE_INPUTS, setBoardSize);
   bindStartButtonListener();
 }
 
@@ -196,9 +191,9 @@ function shouldShowBackToGameButton(): boolean {
 }
 
 function isAllSettingsSelected(): boolean {
-  const hasTheme = Array.from(themeInputs).some((input) => input.checked);
-  const hasPlayer = Array.from(playerInputs).some((input) => input.checked);
-  const hasBoardSize = Array.from(boardSizeInputs).some(
+  const hasTheme = Array.from(THEME_INPUTS).some((input) => input.checked);
+  const hasPlayer = Array.from(PLAYER_INPUTS).some((input) => input.checked);
+  const hasBoardSize = Array.from(BOARD_SIZE_INPUTS).some(
     (input) => input.checked
   );
 
@@ -206,34 +201,33 @@ function isAllSettingsSelected(): boolean {
 }
 
 function updateStartButtonState(): void {
-  if (!startButton) {
+  if (!START_BUTTON) {
     return;
   }
 
   const isEnabled = isAllSettingsSelected();
 
-  if (isEnabled) {
-    startButton.removeAttribute("disabled");
-  } else {
-    startButton.setAttribute("disabled", "");
-  }
+  START_BUTTON.disabled = !isEnabled;
 }
 
-function initBackToGameButton() {
-  if (!backToGameButton) {
+function initBackToGameButton(): void {
+  if (!BACK_TO_GAME_BUTTON) {
     return;
   }
 
   if (shouldShowBackToGameButton()) {
-    backToGameButton.hidden = false;
+    BACK_TO_GAME_BUTTON.hidden = false;
     return;
   }
 
-  backToGameButton.hidden = true;
+  BACK_TO_GAME_BUTTON.hidden = true;
 }
 
-export function initSettings() {
-  if (!themeInputs.length) {
+/**
+ * Initializes the settings page from stored values and binds all UI listeners.
+ */
+export function initSettings(): void {
+  if (!THEME_INPUTS.length) {
     return;
   }
 

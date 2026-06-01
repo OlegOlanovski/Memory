@@ -2,98 +2,97 @@
 <html lang="de" data-theme="Code vibes theme">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Game</title>
+  <link rel="icon" type="image/svg+xml" href="/img/stadia-controller.svg">
 </head>
 
 <body class="game-page">
-    <main class="game-layout">
-        <section class="game-shell">
-            <header class="game-header">
-                <section class="game-scoreboard" aria-label="Scoreboard">
-                    <article class="game-score game-score--blue" aria-label="Blue score">
-                        <img data-score-icon="Blue" src="" alt="Blue marker">
-                        <span class="score-label">Blue:</span>
-                        <strong data-score="Blue">0</strong>
-                    </article>
-                    <article class="game-score game-score--orange" aria-label="Orange score">
-                        <img data-score-icon="Orange" src="" alt="Orange marker">
-                        <span class="score-label">Orange:</span>
-                        <strong data-score="Orange">0</strong>
-                    </article>
-                </section>
-
-                <section class="game-current-player" aria-label="Current player">
-                    <span>Current player:</span>
-                    <img data-current-player-icon src="" alt="Blue player icon">
-                    <strong data-current-player-name>Blue</strong>
-                </section>
-
-                <nav class="button-content" aria-label="Game actions">
-                    <div class="exit-btn">
-                        <button type="button" data-exit-game-trigger>Exit game</button>
-                    </div>
-                </nav>
-            </header>
-
-            <section class="game-status" data-game-status>
-                Finde alle Paare.
-            </section>
-
-            <section class="memory-content">
-                <section class="game-grid" data-game-grid aria-label="Memory board">
-
-                </section>
-            </section>
-
+  <main class="game-layout">
+    <h1 class="visually-hidden">Memory Game</h1>
+    <section class="game-shell">
+      <header class="game-header">
+        <section class="game-scoreboard" aria-label="Scoreboard">
+          <article class="game-score game-score--blue" aria-label="Blue score">
+            <img data-score-icon="Blue" src="" alt="Blue marker">
+            <span class="score-label">Blue:</span>
+            <strong data-score="Blue">0</strong>
+          </article>
+          <article class="game-score game-score--orange" aria-label="Orange score">
+            <img data-score-icon="Orange" src="" alt="Orange marker">
+            <span class="score-label">Orange:</span>
+            <strong data-score="Orange">0</strong>
+          </article>
         </section>
-    </main>
 
-    <section class="gameover-intro" data-gameover-intro hidden aria-live="polite">
-        <h1 class="gameover-intro__title">Game over</h1>
-        <p class="gameover-intro__subtitle">Final score</p>
-        <section class="gameover-intro__scores" aria-label="Final score overview">
-            <article class="gameover-intro__score gameover-intro__score--blue" aria-label="Blue final score">
-                <img data-gameover-score-icon="Blue" src="" alt="Blue">
-                <span>Blue</span>
-                <strong data-gameover-score="Blue">0</strong>
-            </article>
-            <article class="gameover-intro__score gameover-intro__score--orange" aria-label="Orange final score">
-                <img data-gameover-score-icon="Orange" src="" alt="Orange">
-                <span>Orange</span>
-                <strong data-gameover-score="Orange">0</strong>
-            </article>
+        <section class="game-current-player" aria-label="Current player">
+          <span>Current player:</span>
+          <img data-current-player-icon src="" alt="Blue player icon">
+          <strong data-current-player-name>Blue</strong>
         </section>
+
+        <section class="button-content" aria-label="Game actions">
+          <div class="exit-btn">
+            <button type="button" data-exit-game-trigger>Exit game</button>
+          </div>
+        </section>
+      </header>
+
+      <p class="game-status" data-game-status>
+        Find all pairs.
+      </p>
+
+      <section class="memory-content">
+        <section class="game-grid" data-game-grid aria-label="Memory board"></section>
+      </section>
     </section>
+  </main>
 
-    <aside class="winner-overlay" data-game-over hidden aria-live="polite" aria-label="Winner overlay">
-        <div class="confetti-container" data-confetti></div>
-        <article class="winner-card">
-            <p class="winner-subtitle" data-winner-subtitle>The winner is</p>
-            <img class="winner-icon" data-winner-icon src="" alt="Winner icon">
-            <h1 class="winner-name" data-winner-name>BLUE PLAYER</h1>
-            <img class="winner-pawn" data-winner-pawn src="" alt="Winner pawn">
-            <img class="winner-draw-icon" data-winner-draw-icon src="" alt="" aria-hidden="true" hidden>
-        </article>
-    </aside>
+  <section class="gameover-intro" data-gameover-intro hidden aria-live="polite">
+    <h2 class="gameover-intro__title">Game over</h2>
+    <p class="gameover-intro__subtitle">Final score</p>
+    <section class="gameover-intro__scores" aria-label="Final score overview">
+      <article class="gameover-intro__score gameover-intro__score--blue" aria-label="Blue final score">
+        <img data-gameover-score-icon="Blue" src="" alt="Blue">
+        <span>Blue</span>
+        <strong data-gameover-score="Blue">0</strong>
+      </article>
+      <article class="gameover-intro__score gameover-intro__score--orange" aria-label="Orange final score">
+        <img data-gameover-score-icon="Orange" src="" alt="Orange">
+        <span>Orange</span>
+        <strong data-gameover-score="Orange">0</strong>
+      </article>
+    </section>
+  </section>
 
-    <dialog class="exit-dialog" data-exit-dialog aria-labelledby="exit-dialog-title">
-        <div class="exit-dialog__card">
-            <h2 id="exit-dialog-title" class="exit-dialog__title">Exit game?</h2>
-            <p class="exit-dialog__text">Your current match will be closed.</p>
-            <div class="button-content exit-dialog__actions">
-                <div class="exit-btn">
-                    <button type="button" data-exit-dialog-close>Back to game</button>
-                </div>
-                <div class="exit-btn">
-                    <button type="button" data-exit-dialog-confirm>Exit game</button>
-                </div>
-            </div>
+  <section class="winner-overlay" data-game-over hidden aria-live="polite" aria-label="Winner overlay">
+    <div class="confetti-container" data-confetti></div>
+    <article class="winner-card">
+      <p class="winner-subtitle" data-winner-subtitle>The winner is</p>
+      <img class="winner-icon" data-winner-icon src="" alt="Winner icon">
+      <h2 class="winner-name" data-winner-name>BLUE PLAYER</h2>
+      <img class="winner-pawn" data-winner-pawn src="" alt="Winner pawn">
+      <img class="winner-draw-icon" data-winner-draw-icon src="" alt="Draw result illustration" hidden>
+    </article>
+  </section>
+
+  <dialog class="exit-dialog" data-exit-dialog aria-labelledby="exit-dialog-title">
+    <div class="exit-dialog__card">
+      <h2 id="exit-dialog-title" class="exit-dialog__title">Exit game?</h2>
+      <p class="exit-dialog__text">Your current match will be closed.</p>
+      <div class="button-content exit-dialog__actions">
+        <div class="exit-btn">
+          <button type="button" data-exit-dialog-close>Back to game</button>
         </div>
-    </dialog>
+        <div class="exit-btn">
+          <button type="button" data-exit-dialog-confirm>Exit game</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
 
-    <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/main.ts"></script>
 </body>
 
 </html>
