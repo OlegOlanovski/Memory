@@ -54,4 +54,3 @@ Das Projekt ist in Vite als `multi-page app` konfiguriert, siehe `vite.config.ts
 - `localStorage` speichert die ausgewählten Spieleinstellungen;
 - `sessionStorage` speichert den aktuellen Spielstand, solange die Browser-Sitzung aktiv ist.
 
-Für den Betrieb des Projekts werden weder Backend noch Datenbank benötigt.
