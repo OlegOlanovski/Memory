@@ -15,11 +15,11 @@ import {
   syncCheckedInput,
   THEME_INPUTS,
 } from "./shared";
-import { applyThemePreview, setPlayer, setTheme } from "./preview";
+import { applyThemePreview, clearThemePreview, setPlayer, setTheme } from "./preview";
 
 function setNavValue(element: HTMLElement | null, value: string | null): void {
   if (element) {
-    element.textContent = value ?? "—";
+    element.textContent = value ?? "";
   }
 }
 
@@ -79,6 +79,28 @@ function getStoredTheme(): string {
     : DEFAULT_THEME;
 }
 
+function clearSelection(inputs: NodeListOf<HTMLInputElement>): void {
+  inputs.forEach((input) => {
+    input.checked = false;
+  });
+}
+
+function clearStoredSelection(): void {
+  localStorage.removeItem("theme");
+  localStorage.removeItem("player");
+  localStorage.removeItem("boardSize");
+}
+
+function resetSettingsSelection(): void {
+  clearStoredSelection();
+  clearSelection(PLAYER_INPUTS);
+  clearSelection(BOARD_SIZE_INPUTS);
+  const defaultTheme = THEME_INPUTS[0]?.value ?? DEFAULT_THEME;
+
+  applyCheckedSelection(THEME_INPUTS, defaultTheme, setTheme);
+  updateSettingsNavSelection(defaultTheme, null, null);
+}
+
 function applyInitialSelection(selection: SettingsSelection): void {
   applyCheckedSelection(THEME_INPUTS, selection.theme, setTheme);
   applyCheckedSelection(PLAYER_INPUTS, selection.player, setPlayer);
@@ -122,9 +144,14 @@ function handleCheckedInput(
 }
 
 function restoreSelectedThemePreview(): void {
-  const selectedTheme =
-    Array.from(THEME_INPUTS).find((input) => input.checked)?.value ??
-    DEFAULT_THEME;
+  const selectedTheme = Array.from(THEME_INPUTS).find(
+    (input) => input.checked
+  )?.value;
+
+  if (!selectedTheme) {
+    clearThemePreview();
+    return;
+  }
 
   applyThemePreview(selectedTheme);
 }
@@ -190,6 +217,10 @@ function shouldShowBackToGameButton(): boolean {
   return fromGame === "1" || hasGameInProgress;
 }
 
+function shouldRestoreStoredSelection(): boolean {
+  return shouldShowBackToGameButton();
+}
+
 function isAllSettingsSelected(): boolean {
   const hasTheme = Array.from(THEME_INPUTS).some((input) => input.checked);
   const hasPlayer = Array.from(PLAYER_INPUTS).some((input) => input.checked);
@@ -232,8 +263,14 @@ export function initSettings(): void {
   }
 
   initBackToGameButton();
-  const initialSelection = getInitialSelection();
-  applyInitialSelection(initialSelection);
+
+  if (shouldRestoreStoredSelection()) {
+    const initialSelection = getInitialSelection();
+    applyInitialSelection(initialSelection);
+  } else {
+    resetSettingsSelection();
+  }
+
   bindSettingsListeners();
   updateStartButtonState();
 }

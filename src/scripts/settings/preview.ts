@@ -1,6 +1,7 @@
 import {
   CURRENT_PLAYER_ICON,
   CURRENT_PLAYER_ICON_WRAPPER,
+  DEFAULT_THEME,
   DEFAULT_PLAYER,
   DEFAULT_PLAYER_ICONS,
   PLAYER_ICONS_BY_THEME,
@@ -97,6 +98,25 @@ export function applyThemePreview(theme: string): void {
 }
 
 /**
+ * Clears the theme preview when no theme has been selected yet.
+ */
+export function clearThemePreview(): void {
+  if (THEME_SECTION) {
+    THEME_SECTION.removeAttribute("data-theme");
+  }
+
+  if (PREVIEW_CARD_1) {
+    PREVIEW_CARD_1.removeAttribute("src");
+    PREVIEW_CARD_1.alt = "";
+  }
+
+  if (PREVIEW_CARD_2) {
+    PREVIEW_CARD_2.removeAttribute("src");
+    PREVIEW_CARD_2.alt = "";
+  }
+}
+
+/**
  * Persists the selected theme and refreshes the preview area.
  */
 export function setTheme(theme: string): string {
@@ -110,7 +130,7 @@ export function setTheme(theme: string): string {
  */
 export function setPlayer(player: string): string {
   const theme = localStorage.getItem("theme");
-  applyPreviewPlayerIcons(theme ?? DEFAULT_PLAYER, player);
+  applyPreviewPlayerIcons(theme ?? DEFAULT_THEME, player);
 
   localStorage.setItem("player", player);
   return player;
