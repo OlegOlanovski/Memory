@@ -73,7 +73,23 @@
       <img class="winner-icon" data-winner-icon src="" alt="Winner icon">
       <h2 class="winner-name" data-winner-name>BLUE PLAYER</h2>
       <img class="winner-pawn" data-winner-pawn src="" alt="Winner pawn">
-      <img class="winner-draw-icon" data-winner-draw-icon src="" alt="Draw result illustration" hidden>
+      <div class="button-content result-actions">
+        <div class="exit-btn">
+          <button type="button" data-play-again>HOME</button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="draw-overlay" data-draw-overlay hidden aria-live="polite" aria-label="Draw result">
+    <article class="draw-card">
+      <h2 class="visually-hidden">It's a draw</h2>
+      <img class="draw-card__image" data-draw-image src="" alt="Draw result illustration">
+      <div class="button-content result-actions">
+        <div class="exit-btn">
+          <button type="button" data-play-again>HOME</button>
+        </div>
+      </div>
     </article>
   </section>
 

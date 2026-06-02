@@ -2,7 +2,10 @@ import {
   CONFETTI_CONTAINER,
   CONFETTI_COLORS,
   CONFETTI_COUNT,
-  GAME_OVER_DISPLAY_MS,
+  DEFAULT_THEME,
+  DRAW_IMAGE_BY_THEME,
+  DRAW_IMAGE_ELEMENT,
+  DRAW_OVERLAY,
   GAME_OVER_INTRO_MS,
   GAME_OVER_OVERLAY,
   GAMEOVER_BLUE_SCORE,
@@ -10,7 +13,6 @@ import {
   GAMEOVER_ORANGE_SCORE,
   RUNTIME,
   type Player,
-  WINNER_DRAW_ICON_ELEMENT,
   WINNER_ICON_ELEMENT,
   WINNER_NAME_ELEMENT,
   WINNER_PAWN_ELEMENT,
@@ -24,6 +26,12 @@ interface WinnerContentDeps {
   persistGameState: () => void;
   winnerPawnMap: Record<Player, string>;
 }
+
+const PLAY_AGAIN_BUTTONS = document.querySelectorAll(
+  "[data-play-again]"
+) as NodeListOf<HTMLButtonElement>;
+
+let arePlayAgainListenersBound = false;
 
 function createConfettiPiece(): HTMLSpanElement {
   const piece = document.createElement("span");
@@ -64,6 +72,10 @@ function determineWinner(): { winner: string; winnerLabel: string } {
   return { winner, winnerLabel };
 }
 
+function getDrawImage(): string {
+  return DRAW_IMAGE_BY_THEME[RUNTIME.activeTheme] ?? DRAW_IMAGE_BY_THEME[DEFAULT_THEME];
+}
+
 function applyGameoverScores(): void {
   if (GAMEOVER_BLUE_SCORE) {
     GAMEOVER_BLUE_SCORE.textContent = String(RUNTIME.scores.Blue);
@@ -101,23 +113,15 @@ function applyWinnerPawn(winner: string, deps: WinnerContentDeps): void {
     return;
   }
 
-  const pawn = WINNER_PAWN_ELEMENT;
-  pawn.hidden = winner === "draw";
-
-  if (winner === "draw") {
-    return;
-  }
-
-  setWinnerPawnImage(pawn, winner as Player, deps);
+  setWinnerPawnImage(WINNER_PAWN_ELEMENT, winner as Player, deps);
 }
 
-function applyWinnerSubtitle(winner: string): void {
+function applyWinnerSubtitle(): void {
   if (!WINNER_SUBTITLE_ELEMENT) {
     return;
   }
 
-  WINNER_SUBTITLE_ELEMENT.textContent =
-    winner === "draw" ? "It's a draw!" : "The winner is";
+  WINNER_SUBTITLE_ELEMENT.textContent = "The winner is";
 }
 
 function applyWinnerName(winner: string, winnerLabel: string): void {
@@ -134,17 +138,8 @@ function applyWinnerIcon(winner: string, deps: WinnerContentDeps): void {
     return;
   }
 
-  WINNER_ICON_ELEMENT.hidden = winner === "draw";
-
-  if (winner !== "draw") {
-    WINNER_ICON_ELEMENT.src = deps.getPlayerIcon(winner as Player);
-  }
-}
-
-function toggleDrawIcon(winner: string): void {
-  if (WINNER_DRAW_ICON_ELEMENT) {
-    WINNER_DRAW_ICON_ELEMENT.hidden = winner !== "draw";
-  }
+  WINNER_ICON_ELEMENT.src = deps.getPlayerIcon(winner as Player);
+  WINNER_ICON_ELEMENT.hidden = false;
 }
 
 function applyWinnerElements(
@@ -152,44 +147,82 @@ function applyWinnerElements(
   winnerLabel: string,
   deps: WinnerContentDeps
 ): void {
-  applyWinnerSubtitle(winner);
+  applyWinnerSubtitle();
   applyWinnerName(winner, winnerLabel);
   applyWinnerIcon(winner, deps);
-  toggleDrawIcon(winner);
   applyWinnerPawn(winner, deps);
+}
+
+function applyDrawImage(): void {
+  if (!DRAW_IMAGE_ELEMENT) {
+    return;
+  }
+
+  DRAW_IMAGE_ELEMENT.src = getDrawImage();
+  DRAW_IMAGE_ELEMENT.alt = `${RUNTIME.activeTheme} draw result illustration`;
 }
 
 function hideGameOverIntro(): void {
   GAMEOVER_INTRO_OVERLAY?.setAttribute("hidden", "");
 }
 
-function redirectAfterGameOver(deps: WinnerContentDeps): void {
+function hideResultOverlays(): void {
+  GAME_OVER_OVERLAY?.setAttribute("hidden", "");
+  DRAW_OVERLAY?.setAttribute("hidden", "");
+}
+
+function startNextRound(deps: WinnerContentDeps): void {
   window.removeEventListener("beforeunload", deps.persistGameState);
   deps.clearStoredGameState();
   window.location.href = "./settings.html";
 }
 
-function showGameOverResult(deps: WinnerContentDeps): void {
-  hideGameOverIntro();
+function showWinnerOverlay(): void {
   spawnConfetti();
   GAME_OVER_OVERLAY?.removeAttribute("hidden");
-  window.setTimeout(() => redirectAfterGameOver(deps), GAME_OVER_DISPLAY_MS);
 }
 
-function showGameOverOverlay(deps: WinnerContentDeps): void {
+function showDrawOverlay(): void {
+  DRAW_OVERLAY?.removeAttribute("hidden");
+}
+
+function bindPlayAgainButtons(deps: WinnerContentDeps): void {
+  if (arePlayAgainListenersBound) {
+    return;
+  }
+
+  PLAY_AGAIN_BUTTONS.forEach((button) => {
+    button.addEventListener("click", () => startNextRound(deps));
+  });
+
+  arePlayAgainListenersBound = true;
+}
+
+function showGameOverResult(winner: string): void {
+  hideGameOverIntro();
+  hideResultOverlays();
+
+  if (winner === "draw") {
+    showDrawOverlay();
+  } else {
+    showWinnerOverlay();
+  }
+}
+
+function showGameOverOverlay(winner: string, deps: WinnerContentDeps): void {
   GAMEOVER_INTRO_OVERLAY?.removeAttribute("hidden");
-  window.setTimeout(() => showGameOverResult(deps), GAME_OVER_INTRO_MS);
+  window.setTimeout(() => showGameOverResult(winner), GAME_OVER_INTRO_MS);
 }
 
-function scheduleGameOverOverlay(deps: WinnerContentDeps): void {
-  window.setTimeout(() => showGameOverOverlay(deps), 1500);
+function scheduleGameOverOverlay(winner: string, deps: WinnerContentDeps): void {
+  window.setTimeout(() => showGameOverOverlay(winner, deps), 1500);
 }
 
 /**
  * Displays the game-over sequence and schedules the redirect to settings.
  */
 export function showGameOver(deps: WinnerContentDeps): void {
-  if (!GAME_OVER_OVERLAY) {
+  if (!GAME_OVER_OVERLAY && !DRAW_OVERLAY) {
     return;
   }
 
@@ -197,6 +230,13 @@ export function showGameOver(deps: WinnerContentDeps): void {
   const { winner, winnerLabel } = determineWinner();
 
   applyGameoverScores();
-  applyWinnerElements(winner, winnerLabel, deps);
-  scheduleGameOverOverlay(deps);
+  bindPlayAgainButtons(deps);
+
+  if (winner === "draw") {
+    applyDrawImage();
+  } else {
+    applyWinnerElements(winner, winnerLabel, deps);
+  }
+
+  scheduleGameOverOverlay(winner, deps);
 }

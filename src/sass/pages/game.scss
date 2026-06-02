@@ -306,7 +306,8 @@
   }
 }
 
-.winner-overlay {
+.winner-overlay,
+.draw-overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -350,7 +351,8 @@
   }
 }
 
-.winner-card {
+.winner-card,
+.draw-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -383,14 +385,35 @@
   margin: 0;
 }
 
-.winner-draw-icon {
-  width: 80px;
+.draw-card__image {
+  display: block;
+  width: min(420px, 88vw);
   height: auto;
-  opacity: 0.7;
-  filter: invert(1) brightness(1.5);
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.28));
+}
 
-  &[hidden] {
-    display: none;
+.result-actions {
+  margin-top: 0.5rem;
+}
+
+.result-actions .exit-btn {
+  border-width: 2px;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+
+  &:hover {
+    border-width: 2px;
+    border-color: color-mix(in srgb, var(--color-button-border) 70%, #ffffff 30%);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.result-actions .exit-btn button {
+  transition: transform 180ms ease;
+
+  &:hover {
+    transform: scale(1.05);
   }
 }
 

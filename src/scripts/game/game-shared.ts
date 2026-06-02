@@ -119,6 +119,12 @@ export const GAME_OVER_OVERLAY = document.querySelector(
   "[data-game-over]"
 ) as HTMLElement | null;
 /**
+ * Dedicated overlay that is shown when the match ends in a draw.
+ */
+export const DRAW_OVERLAY = document.querySelector(
+  "[data-draw-overlay]"
+) as HTMLElement | null;
+/**
  * Winner icon element for non-draw results.
  */
 export const WINNER_ICON_ELEMENT = document.querySelector(
@@ -137,10 +143,10 @@ export const WINNER_PAWN_ELEMENT = document.querySelector(
   "[data-winner-pawn]"
 ) as HTMLImageElement | null;
 /**
- * Draw illustration element in the result overlay.
+ * Draw illustration element in the dedicated draw overlay.
  */
-export const WINNER_DRAW_ICON_ELEMENT = document.querySelector(
-  "[data-winner-draw-icon]"
+export const DRAW_IMAGE_ELEMENT = document.querySelector(
+  "[data-draw-image]"
 ) as HTMLImageElement | null;
 /**
  * Subtitle element above the winner label.
@@ -295,6 +301,15 @@ export const CARD_FRONT_BY_THEME: Record<string, string[]> = {
     `${BASE}img/theme-img/da-projects-front-16.png`,
     `${BASE}img/theme-img/da-projects-front-17.png`,
   ],
+};
+
+/**
+ * Theme-specific draw illustration used for tied matches.
+ */
+export const DRAW_IMAGE_BY_THEME: Record<string, string> = {
+  "Code vibes theme": `${BASE}img/draw-code-vibes-theme.png`,
+  "Gaming theme": `${BASE}img/draw-gaming-theme.png`,
+  "DA Projects theme": `${BASE}img/draw-da-projects-theme.png`,
 };
 
 /**
