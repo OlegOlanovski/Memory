@@ -53,12 +53,6 @@ export const CURRENT_PLAYER_ICON_ELEMENT = document.querySelector(
   "[data-current-player-icon]"
 ) as HTMLImageElement | null;
 /**
- * Current player name in the game header.
- */
-export const CURRENT_PLAYER_NAME_ELEMENT = document.querySelector(
-  "[data-current-player-name]"
-) as HTMLElement | null;
-/**
  * Score value element for the blue player.
  */
 export const BLUE_SCORE_ELEMENT = document.querySelector(

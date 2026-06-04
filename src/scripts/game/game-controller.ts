@@ -4,7 +4,6 @@ import {
   BOARD_ELEMENT,
   CARD_BACK_BY_THEME,
   CURRENT_PLAYER_ICON_ELEMENT,
-  CURRENT_PLAYER_NAME_ELEMENT,
   DEFAULT_PLAYER_ICON_MAP,
   DEFAULT_THEME,
   GAME_ROOT,
@@ -14,7 +13,6 @@ import {
   ORANGE_SCORE_ICON_ELEMENT,
   PLAYER_ICON_MAP_BY_THEME,
   RUNTIME,
-  STATUS_ELEMENT,
   type CardModel,
   type GameStateSnapshot,
   type Player,
@@ -121,22 +119,12 @@ function updateHeaderState(): void {
     CURRENT_PLAYER_ICON_ELEMENT.alt = `${RUNTIME.currentPlayer} player icon`;
   }
 
-  if (CURRENT_PLAYER_NAME_ELEMENT) {
-    CURRENT_PLAYER_NAME_ELEMENT.textContent = RUNTIME.currentPlayer;
-  }
-
   if (BLUE_SCORE_ELEMENT) {
     BLUE_SCORE_ELEMENT.textContent = String(RUNTIME.scores.Blue);
   }
 
   if (ORANGE_SCORE_ELEMENT) {
     ORANGE_SCORE_ELEMENT.textContent = String(RUNTIME.scores.Orange);
-  }
-}
-
-function updateStatus(text: string): void {
-  if (STATUS_ELEMENT) {
-    STATUS_ELEMENT.textContent = text;
   }
 }
 
@@ -159,7 +147,6 @@ function finalizeMatchedTurn(firstCard: CardModel, secondCard: CardModel): void 
   syncCardElement(firstCard);
   syncCardElement(secondCard);
   updateHeaderState();
-  updateStatus(`${RUNTIME.currentPlayer} found a pair.`);
   resetTurnState();
 }
 
@@ -217,7 +204,6 @@ function handleMismatch(firstCardId: number, secondCardId: number): void {
     return;
   }
 
-  updateStatus("No match. Switching player.");
   window.setTimeout(() => finalizeMismatchTurn(firstCard, secondCard), 700);
 }
 
@@ -260,7 +246,6 @@ function revealCard(card: CardModel): void {
 
 function handleFirstTurnCard(card: CardModel): void {
   RUNTIME.firstCardId = card.id;
-  updateStatus(`${RUNTIME.currentPlayer} is on turn.`);
   persistGameState();
 }
 
@@ -316,9 +301,6 @@ function restoreGameState(
   resetTurnState();
   renderBoard(boardSize);
   updateHeaderState();
-  updateStatus(
-    storedGameState.statusText || `${RUNTIME.currentPlayer} is on turn.`
-  );
 }
 
 function startNewGame(boardSize: number): void {
@@ -331,7 +313,6 @@ function startNewGame(boardSize: number): void {
   resetTurnState();
   renderBoard(boardSize);
   updateHeaderState();
-  updateStatus(`${RUNTIME.currentPlayer} starts.`);
 }
 
 function initializeGameState(boardSize: number): void {

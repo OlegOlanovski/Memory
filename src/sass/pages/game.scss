@@ -28,13 +28,12 @@
 
 .game-header {
   display: flex;
-  align-items: center;
+  align-items: self-end;
   justify-content: space-around;
-  gap: 1rem;
+  gap: 13rem;
   flex-wrap: wrap;
   padding: 0.75rem;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--color-secondary) 70%, #111 30%);
 }
 
 .game-scoreboard {
@@ -82,24 +81,14 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  width: 200px;
+  width: auto;
+  transform: translateX(-120px);
   font-family: "Almarai Bold", sans-serif;
 
   img {
     width: 20px;
     height: auto;
   }
-
-  [data-current-player-name] {
-    display: var(--player-name-display, block);
-  }
-}
-
-.game-status {
-  font-family: "Almarai Regular", sans-serif;
-  font-size: 1rem;
-  min-height: 1.5rem;
-  margin: 0;
 }
 
 .memory-content {
@@ -404,7 +393,11 @@
 
   &:hover {
     border-width: 2px;
-    border-color: color-mix(in srgb, var(--color-button-border) 70%, #ffffff 30%);
+    border-color: color-mix(
+      in srgb,
+      var(--color-button-border) 70%,
+      #ffffff 30%
+    );
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   }
 }
