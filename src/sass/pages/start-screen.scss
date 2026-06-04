@@ -47,45 +47,71 @@
 }
 
 .start-screen-buttons {
-  @include animat.fade-in(1s);
-  display: grid;
-  gap: 2rem;
+  display: flex;
   align-items: center;
-  transition: all 0.3s ease;
-  background-color: rgb(240, 234, 110);
-  cursor: pointer;
   margin: 60px 0 0 0;
 
+  .button {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.start-screen-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 25px 34px 25px 28px;
+  background-color: rgb(240, 234, 110);
+  overflow: hidden;
+  transform: scale(1);
+  transform-origin: center;
+  will-change: transform;
+  transition:
+    box-shadow 0.32s ease,
+    transform 0.32s ease;
+
   &:hover {
-    padding: 0 7px;
-    transition: all 0.3s ease;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.16);
+    transform: scale(1.04);
   }
-  & .button-icons {
-    width: 50px;
+
+  &__label {
+    display: inline-block;
+    line-height: 1;
+    transform: scale(1);
+    transform-origin: center;
+    transition: transform 0.32s ease;
+  }
+
+  .button-icons {
+    display: block;
     height: auto;
-    top: 53%;
-    position: fixed;
+    flex-shrink: 0;
   }
 
-  & .button-icons.--controller {
+  .button-icons.--controller {
     width: 50px;
-    margin: -16px 7.5rem -16px 8px;
+    transform: translateX(0) rotate(0deg);
+    transition: transform 0.32s ease;
   }
 
-  & .button-icons.--arrow {
+  .button-icons.--arrow {
     width: 40px;
-    margin: -10px 0 -10px 10.5rem;
-    transition: all 0.35s ease-in-out;
+    transform: translateX(0) scale(1);
+    transition: transform 0.32s ease;
   }
 
-  &:hover .button-icons.button-icons.--arrow {
-    width: 40px;
-    scale: 1.5;
-    margin: -9px 0 -9px 11.3rem;
-    transition: all 0.35s ease-in-out;
+  &:hover .start-screen-button__label {
+    transform: scale(1.06);
   }
-  &:hover .button-icons.button-icons.--controller {
-    transform: rotate(-25deg);
-    transition: all 0.35s ease-in-out;
+
+  &:hover .button-icons.--controller {
+    transform: translateX(-8px) rotate(-24deg);
+  }
+
+  &:hover .button-icons.--arrow {
+    transform: translateX(8px) scale(1.18);
   }
 }

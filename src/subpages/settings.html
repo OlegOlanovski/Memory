@@ -17,12 +17,12 @@
       </a>
     </header>
 
-    <section class="settings-content">
-      <section class="settings-sidebar">
+    <div class="settings-content">
+      <div class="settings-sidebar">
         <section aria-label="Theme selection">
           <div class="sub-headline-content">
             <img class="headline-icon" src="/img/palette.svg" alt="" aria-hidden="true">
-            <p class="headline">Game Themes</p>
+            <h2 class="headline">Game Themes</h2>
           </div>
           <fieldset class="input-content">
             <legend class="visually-hidden">Game themes</legend>
@@ -47,7 +47,7 @@
         <section aria-label="Player selection">
           <div class="sub-headline-content">
             <img class="headline-icon" src="/img/chess-pawn.svg" alt="" aria-hidden="true">
-            <p class="headline">Choose player</p>
+            <h2 class="headline">Choose player</h2>
           </div>
           <fieldset class="input-content">
             <legend class="visually-hidden">Choose player</legend>
@@ -67,7 +67,7 @@
         <section aria-label="Board size selection">
           <div class="sub-headline-content">
             <img class="headline-icon" src="/img/style.svg" alt="" aria-hidden="true">
-            <p class="headline">Board size</p>
+            <h2 class="headline">Board size</h2>
           </div>
           <fieldset class="input-content">
             <legend class="visually-hidden">Board size</legend>
@@ -88,10 +88,10 @@
             </div>
           </fieldset>
         </section>
-      </section>
+      </div>
 
-      <section class="settings-content-panel">
-        <section class="theme-section">
+      <div class="settings-content-panel">
+        <div class="theme-section">
           <header>
             <div class="player-content">
               <img data-preview-player-icon="Blue" src="/img/label_blue.svg" alt="Blue marker">
@@ -114,13 +114,13 @@
               </div>
             </div>
           </header>
-          <section id="theme-preview" class="theme-preview" aria-label="Theme preview cards">
+          <div id="theme-preview" class="theme-preview" aria-label="Theme preview cards">
             <img class="preview-card preview-card--2" src="" alt="Second preview card for the selected theme">
             <img class="preview-card preview-card--1" src="" alt="First preview card for the selected theme">
-          </section>
-        </section>
+          </div>
+        </div>
 
-        <section class="settings-nav" aria-label="Current settings summary">
+        <div class="settings-nav" aria-label="Current settings summary">
           <ul class="settings-nav__list">
             <li class="settings-nav__item" data-settings-nav="theme">
               <span>Theme </span><span class="settings-nav__value"></span>
@@ -132,13 +132,13 @@
               <span>Board </span><span class="settings-nav__value"></span>
             </li>
           </ul>
-          <section class="setting-screen-buttons" aria-label="Start game action">
+          <div class="setting-screen-buttons" aria-label="Start game action">
             <button type="button" class="button--settings" data-start-button disabled>Start</button>
             <img class="button-icons --controller" src="/img/smart_display.svg" alt="" aria-hidden="true">
-          </section>
-        </section>
-      </section>
-    </section>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script type="module" src="/src/main.ts"></script>
