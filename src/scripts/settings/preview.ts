@@ -15,12 +15,22 @@ import {
   getCheckedValue,
 } from "./shared";
 
+/**
+ * Applies the selected theme token to the preview container.
+ *
+ * @param theme Theme name that should be reflected in preview styling.
+ */
 function applyTheme(theme: string): void {
   if (THEME_SECTION) {
     THEME_SECTION.setAttribute("data-theme", theme);
   }
 }
 
+/**
+ * Updates both preview card images for the selected theme.
+ *
+ * @param theme Theme name used to look up preview assets.
+ */
 function applyPreviewImages(theme: string): void {
   const preview = THEME_PREVIEW_MAP[theme];
   if (!preview) return;
@@ -36,10 +46,23 @@ function applyPreviewImages(theme: string): void {
   }
 }
 
+/**
+ * Resolves the player icon mapping for the given theme.
+ *
+ * @param theme Theme name used to resolve the correct player icons.
+ * @returns Player icon sources keyed by player name.
+ */
 function getPlayerIconsForTheme(theme: string): Record<string, string> {
   return PLAYER_ICONS_BY_THEME[theme] ?? DEFAULT_PLAYER_ICONS;
 }
 
+/**
+ * Writes one preview score icon when the element exists.
+ *
+ * @param element Score icon element to update.
+ * @param src Image source that should be applied.
+ * @param alt Accessible alternative text for the icon.
+ */
 function setPreviewScoreIcon(
   element: HTMLImageElement | null,
   src: string,
@@ -53,6 +76,11 @@ function setPreviewScoreIcon(
   element.alt = alt;
 }
 
+/**
+ * Updates both preview score icons for the selected theme.
+ *
+ * @param playerIcons Player icon sources for the active theme.
+ */
 function updatePreviewScoreIcons(playerIcons: Record<string, string>): void {
   setPreviewScoreIcon(PREVIEW_BLUE_PLAYER_ICON, playerIcons.Blue, "Blue marker");
   setPreviewScoreIcon(
@@ -62,6 +90,12 @@ function updatePreviewScoreIcons(playerIcons: Record<string, string>): void {
   );
 }
 
+/**
+ * Updates the current-player preview icon for the selected player.
+ *
+ * @param playerIcons Player icon sources for the active theme.
+ * @param selectedPlayer Player currently selected in settings.
+ */
 function updateCurrentPreviewPlayerIcon(
   playerIcons: Record<string, string>,
   selectedPlayer: string
@@ -75,12 +109,23 @@ function updateCurrentPreviewPlayerIcon(
   CURRENT_PLAYER_ICON.alt = `${selectedPlayer} player icon`;
 }
 
+/**
+ * Applies the selected player token to the current-player preview wrapper.
+ *
+ * @param selectedPlayer Player currently selected in settings.
+ */
 function updateCurrentPreviewPlayerWrapper(selectedPlayer: string): void {
   if (CURRENT_PLAYER_ICON_WRAPPER) {
     CURRENT_PLAYER_ICON_WRAPPER.setAttribute("data-player", selectedPlayer);
   }
 }
 
+/**
+ * Refreshes all preview player icons for the current theme and player selection.
+ *
+ * @param theme Theme name used to resolve the preview assets.
+ * @param selectedPlayer Player currently selected in settings.
+ */
 function applyPreviewPlayerIcons(theme: string, selectedPlayer: string): void {
   const playerIcons = getPlayerIconsForTheme(theme);
   updatePreviewScoreIcons(playerIcons);
@@ -90,6 +135,8 @@ function applyPreviewPlayerIcons(theme: string, selectedPlayer: string): void {
 
 /**
  * Updates the settings preview cards and player markers for the selected theme.
+ *
+ * @param theme Theme name that should be previewed.
  */
 export function applyThemePreview(theme: string): void {
   applyTheme(theme);
@@ -118,6 +165,9 @@ export function clearThemePreview(): void {
 
 /**
  * Persists the selected theme and refreshes the preview area.
+ *
+ * @param theme Theme name selected by the user.
+ * @returns The same theme value for reuse in generic handlers.
  */
 export function setTheme(theme: string): string {
   applyThemePreview(theme);
@@ -127,6 +177,9 @@ export function setTheme(theme: string): string {
 
 /**
  * Persists the selected player and updates the preview player marker.
+ *
+ * @param player Player selected by the user.
+ * @returns The same player value for reuse in generic handlers.
  */
 export function setPlayer(player: string): string {
   const theme = localStorage.getItem("theme");

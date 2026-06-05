@@ -25,7 +25,6 @@ export interface GameStateSnapshot {
   cards: CardModel[];
   scores: Record<Player, number>;
   matchedPairs: number;
-  statusText: string;
 }
 
 /**
@@ -39,12 +38,6 @@ export const GAME_ROOT = document.querySelector(
  */
 export const BOARD_ELEMENT = document.querySelector(
   "[data-game-grid]"
-) as HTMLElement | null;
-/**
- * Status text element that describes the current turn result.
- */
-export const STATUS_ELEMENT = document.querySelector(
-  "[data-game-status]"
 ) as HTMLElement | null;
 /**
  * Current player icon in the game header.
@@ -160,10 +153,6 @@ export const CONFETTI_CONTAINER = document.querySelector(
  */
 export const GAME_OVER_INTRO_MS = 2000;
 /**
- * Duration the final game-over overlay stays visible before redirect.
- */
-export const GAME_OVER_DISPLAY_MS = 4000;
-/**
  * Session storage flag for an unfinished game.
  */
 export const GAME_IN_PROGRESS_STORAGE_KEY = "memoryGameInProgress";
@@ -175,10 +164,7 @@ export const GAME_STATE_STORAGE_KEY = "memoryGameState";
  * Default theme used when no selection is stored.
  */
 export const DEFAULT_THEME = "Code vibes theme";
-/**
- * Default player used when no selection is stored.
- */
-export const DEFAULT_PLAYER: Player = "Blue";
+const DEFAULT_PLAYER: Player = "Blue";
 /**
  * Default board size used when no valid selection is stored.
  */

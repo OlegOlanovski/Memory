@@ -141,13 +141,6 @@ export const START_BUTTON = document.querySelector(
 ) as HTMLButtonElement | null;
 
 /**
- * Settings page header used for theme-specific styling.
- */
-export const SETTINGS_HEADER = document.querySelector(
-  ".settings-header"
-) as HTMLElement | null;
-
-/**
  * Default theme selection for the settings page.
  */
 export const DEFAULT_THEME = "Code vibes theme";

@@ -33,6 +33,9 @@ const PLAY_AGAIN_BUTTONS = document.querySelectorAll(
 
 let arePlayAgainListenersBound = false;
 
+/**
+ * Creates one animated confetti particle with randomized appearance.
+ */
 function createConfettiPiece(): HTMLSpanElement {
   const piece = document.createElement("span");
   piece.className = "confetti-piece";
@@ -46,6 +49,9 @@ function createConfettiPiece(): HTMLSpanElement {
   return piece;
 }
 
+/**
+ * Rebuilds the confetti container for the winner overlay.
+ */
 function spawnConfetti(): void {
   if (!CONFETTI_CONTAINER) {
     return;
@@ -58,6 +64,11 @@ function spawnConfetti(): void {
   }
 }
 
+/**
+ * Determines the winner identifier and display label from the current scores.
+ *
+ * @returns Winner id plus the label that should be rendered in the overlay.
+ */
 function determineWinner(): { winner: string; winnerLabel: string } {
   const winner =
     RUNTIME.scores.Blue > RUNTIME.scores.Orange
@@ -72,10 +83,18 @@ function determineWinner(): { winner: string; winnerLabel: string } {
   return { winner, winnerLabel };
 }
 
+/**
+ * Returns the draw illustration that matches the active theme.
+ *
+ * @returns Theme-specific draw result image source.
+ */
 function getDrawImage(): string {
   return DRAW_IMAGE_BY_THEME[RUNTIME.activeTheme] ?? DRAW_IMAGE_BY_THEME[DEFAULT_THEME];
 }
 
+/**
+ * Copies the final score values into the game-over intro overlay.
+ */
 function applyGameoverScores(): void {
   if (GAMEOVER_BLUE_SCORE) {
     GAMEOVER_BLUE_SCORE.textContent = String(RUNTIME.scores.Blue);
@@ -86,6 +105,13 @@ function applyGameoverScores(): void {
   }
 }
 
+/**
+ * Falls back to the default winner pawn if a theme-specific asset fails to load.
+ *
+ * @param pawn Winner image element that failed to load.
+ * @param player Winning player used to select the fallback asset.
+ * @param deps Shared dependencies required by the overlay flow.
+ */
 function applyWinnerPawnFallback(
   pawn: HTMLImageElement,
   player: Player,
@@ -96,6 +122,13 @@ function applyWinnerPawnFallback(
   pawn.onerror = null;
 }
 
+/**
+ * Applies the correct winner pawn or trophy image to the result card.
+ *
+ * @param pawn Winner image element in the overlay.
+ * @param winner Player who won the match.
+ * @param deps Shared dependencies required by the overlay flow.
+ */
 function setWinnerPawnImage(
   pawn: HTMLImageElement,
   winner: Player,
@@ -108,6 +141,12 @@ function setWinnerPawnImage(
   pawn.onerror = () => applyWinnerPawnFallback(pawn, winner, deps);
 }
 
+/**
+ * Updates the winner pawn element when a non-draw result is shown.
+ *
+ * @param winner Winner id as resolved from the current score state.
+ * @param deps Shared dependencies required by the overlay flow.
+ */
 function applyWinnerPawn(winner: string, deps: WinnerContentDeps): void {
   if (!WINNER_PAWN_ELEMENT) {
     return;
@@ -116,6 +155,9 @@ function applyWinnerPawn(winner: string, deps: WinnerContentDeps): void {
   setWinnerPawnImage(WINNER_PAWN_ELEMENT, winner as Player, deps);
 }
 
+/**
+ * Resets the winner subtitle text before showing the result card.
+ */
 function applyWinnerSubtitle(): void {
   if (!WINNER_SUBTITLE_ELEMENT) {
     return;
@@ -124,6 +166,12 @@ function applyWinnerSubtitle(): void {
   WINNER_SUBTITLE_ELEMENT.textContent = "The winner is";
 }
 
+/**
+ * Writes the winner label and semantic state to the result title.
+ *
+ * @param winner Winner id or draw marker used for styling.
+ * @param winnerLabel Human-readable label shown in the overlay.
+ */
 function applyWinnerName(winner: string, winnerLabel: string): void {
   if (!WINNER_NAME_ELEMENT) {
     return;
@@ -133,6 +181,12 @@ function applyWinnerName(winner: string, winnerLabel: string): void {
   WINNER_NAME_ELEMENT.dataset.player = winner;
 }
 
+/**
+ * Updates the winner marker icon for the final result card.
+ *
+ * @param winner Winner id as resolved from the current score state.
+ * @param deps Shared dependencies required by the overlay flow.
+ */
 function applyWinnerIcon(winner: string, deps: WinnerContentDeps): void {
   if (!WINNER_ICON_ELEMENT) {
     return;
@@ -142,6 +196,13 @@ function applyWinnerIcon(winner: string, deps: WinnerContentDeps): void {
   WINNER_ICON_ELEMENT.hidden = false;
 }
 
+/**
+ * Applies all winner-specific content to the result overlay.
+ *
+ * @param winner Winner id as resolved from the current score state.
+ * @param winnerLabel Human-readable winner label for the overlay.
+ * @param deps Shared dependencies required by the overlay flow.
+ */
 function applyWinnerElements(
   winner: string,
   winnerLabel: string,
@@ -153,6 +214,9 @@ function applyWinnerElements(
   applyWinnerPawn(winner, deps);
 }
 
+/**
+ * Updates the draw illustration before showing the draw overlay.
+ */
 function applyDrawImage(): void {
   if (!DRAW_IMAGE_ELEMENT) {
     return;
@@ -162,30 +226,52 @@ function applyDrawImage(): void {
   DRAW_IMAGE_ELEMENT.alt = `${RUNTIME.activeTheme} draw result illustration`;
 }
 
+/**
+ * Hides the intermediate game-over intro overlay.
+ */
 function hideGameOverIntro(): void {
   GAMEOVER_INTRO_OVERLAY?.setAttribute("hidden", "");
 }
 
+/**
+ * Hides both final result overlays before showing the correct one.
+ */
 function hideResultOverlays(): void {
   GAME_OVER_OVERLAY?.setAttribute("hidden", "");
   DRAW_OVERLAY?.setAttribute("hidden", "");
 }
 
+/**
+ * Clears the saved game and returns to the settings page for a new round.
+ *
+ * @param deps Shared dependencies required by the overlay flow.
+ */
 function startNextRound(deps: WinnerContentDeps): void {
   window.removeEventListener("beforeunload", deps.persistGameState);
   deps.clearStoredGameState();
   window.location.href = "./settings.html";
 }
 
+/**
+ * Shows the winner overlay and starts confetti.
+ */
 function showWinnerOverlay(): void {
   spawnConfetti();
   GAME_OVER_OVERLAY?.removeAttribute("hidden");
 }
 
+/**
+ * Shows the dedicated draw overlay.
+ */
 function showDrawOverlay(): void {
   DRAW_OVERLAY?.removeAttribute("hidden");
 }
 
+/**
+ * Binds the play-again buttons once for both result overlays.
+ *
+ * @param deps Shared dependencies required by the overlay flow.
+ */
 function bindPlayAgainButtons(deps: WinnerContentDeps): void {
   if (arePlayAgainListenersBound) {
     return;
@@ -198,6 +284,11 @@ function bindPlayAgainButtons(deps: WinnerContentDeps): void {
   arePlayAgainListenersBound = true;
 }
 
+/**
+ * Chooses and shows the correct final result overlay.
+ *
+ * @param winner Winner id or `"draw"` marker for the finished match.
+ */
 function showGameOverResult(winner: string): void {
   hideGameOverIntro();
   hideResultOverlays();
@@ -209,17 +300,29 @@ function showGameOverResult(winner: string): void {
   }
 }
 
-function showGameOverOverlay(winner: string, deps: WinnerContentDeps): void {
+/**
+ * Reveals the game-over intro overlay before the final result card appears.
+ *
+ * @param winner Winner id or `"draw"` marker for the finished match.
+ */
+function showGameOverOverlay(winner: string): void {
   GAMEOVER_INTRO_OVERLAY?.removeAttribute("hidden");
   window.setTimeout(() => showGameOverResult(winner), GAME_OVER_INTRO_MS);
 }
 
-function scheduleGameOverOverlay(winner: string, deps: WinnerContentDeps): void {
-  window.setTimeout(() => showGameOverOverlay(winner, deps), 1500);
+/**
+ * Delays the final overlay sequence to let the last move settle visually.
+ *
+ * @param winner Winner id or `"draw"` marker for the finished match.
+ */
+function scheduleGameOverOverlay(winner: string): void {
+  window.setTimeout(() => showGameOverOverlay(winner), 1500);
 }
 
 /**
  * Displays the game-over sequence and schedules the redirect to settings.
+ *
+ * @param deps Shared dependencies required by the overlay flow.
  */
 export function showGameOver(deps: WinnerContentDeps): void {
   if (!GAME_OVER_OVERLAY && !DRAW_OVERLAY) {
@@ -238,5 +341,5 @@ export function showGameOver(deps: WinnerContentDeps): void {
     applyWinnerElements(winner, winnerLabel, deps);
   }
 
-  scheduleGameOverOverlay(winner, deps);
+  scheduleGameOverOverlay(winner);
 }

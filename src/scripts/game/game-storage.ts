@@ -3,11 +3,16 @@ import {
   GAME_IN_PROGRESS_STORAGE_KEY,
   GAME_STATE_STORAGE_KEY,
   RUNTIME,
-  STATUS_ELEMENT,
   type GameStateSnapshot,
   type Player,
 } from "./game-shared";
 
+/**
+ * Checks whether an unknown value matches the supported player identifiers.
+ *
+ * @param value Unknown value restored from storage.
+ * @returns `true` when the value is one of the supported players.
+ */
 function isPlayer(value: unknown): value is Player {
   return value === "Blue" || value === "Orange";
 }
@@ -20,6 +25,12 @@ export function clearStoredGameState(): void {
   sessionStorage.removeItem(GAME_STATE_STORAGE_KEY);
 }
 
+/**
+ * Creates the serializable snapshot persisted between page loads.
+ *
+ * @param boardSize Total number of cards in the active match.
+ * @returns Snapshot that can be stored safely in session storage.
+ */
 function buildGameSnapshot(boardSize: number): GameStateSnapshot {
   return {
     theme: RUNTIME.activeTheme,
@@ -28,7 +39,6 @@ function buildGameSnapshot(boardSize: number): GameStateSnapshot {
     cards: RUNTIME.cards,
     scores: { ...RUNTIME.scores },
     matchedPairs: RUNTIME.matchedPairs,
-    statusText: STATUS_ELEMENT?.textContent ?? "",
   };
 }
 
@@ -47,10 +57,22 @@ export function persistGameState(): void {
   sessionStorage.setItem(GAME_IN_PROGRESS_STORAGE_KEY, "true");
 }
 
+/**
+ * Checks whether a stored board size belongs to the supported variants.
+ *
+ * @param boardSize Parsed value from stored data.
+ * @returns `true` when the board size is one of the supported options.
+ */
 function hasValidBoardSize(boardSize: unknown): boolean {
   return boardSize === 16 || boardSize === 24 || boardSize === 36;
 }
 
+/**
+ * Validates that both persisted score values are numeric.
+ *
+ * @param scores Unknown score object restored from storage.
+ * @returns `true` when both player scores are present and numeric.
+ */
 function hasValidScores(scores: unknown): scores is Record<Player, number> {
   return (
     typeof scores === "object" &&
@@ -60,6 +82,12 @@ function hasValidScores(scores: unknown): scores is Record<Player, number> {
   );
 }
 
+/**
+ * Validates the basic shape of a stored snapshot before deeper checks run.
+ *
+ * @param parsed Partially parsed JSON snapshot.
+ * @returns Type-guard result for the required top-level snapshot fields.
+ */
 function hasValidSnapshotShape(
   parsed: Partial<GameStateSnapshot>
 ): parsed is GameStateSnapshot {
@@ -69,15 +97,26 @@ function hasValidSnapshotShape(
     isPlayer(parsed.currentPlayer) &&
     Array.isArray(parsed.cards) &&
     typeof parsed.matchedPairs === "number" &&
-    typeof parsed.statusText === "string" &&
     hasValidScores(parsed.scores)
   );
 }
 
+/**
+ * Checks whether a stored card state is one of the supported runtime states.
+ *
+ * @param state Unknown card state value restored from storage.
+ * @returns `true` when the card state is supported by the runtime.
+ */
 function hasValidCardState(state: unknown): boolean {
   return state === "hidden" || state === "revealed" || state === "matched";
 }
 
+/**
+ * Validates all persisted cards inside a stored snapshot.
+ *
+ * @param snapshot Snapshot that already passed the top-level shape checks.
+ * @returns `true` when every persisted card matches the expected runtime shape.
+ */
 function hasValidCards(snapshot: GameStateSnapshot): boolean {
   return snapshot.cards.every((card) => {
     return (
@@ -89,6 +128,12 @@ function hasValidCards(snapshot: GameStateSnapshot): boolean {
   });
 }
 
+/**
+ * Copies a validated snapshot into the exact runtime-friendly shape.
+ *
+ * @param snapshot Validated snapshot restored from session storage.
+ * @returns Normalized snapshot object safe to hydrate into the runtime.
+ */
 function normalizeSnapshot(snapshot: GameStateSnapshot): GameStateSnapshot {
   return {
     theme: snapshot.theme,
@@ -97,10 +142,15 @@ function normalizeSnapshot(snapshot: GameStateSnapshot): GameStateSnapshot {
     cards: snapshot.cards,
     scores: { Blue: snapshot.scores.Blue, Orange: snapshot.scores.Orange },
     matchedPairs: snapshot.matchedPairs,
-    statusText: snapshot.statusText,
   };
 }
 
+/**
+ * Parses and validates the serialized snapshot stored in session storage.
+ *
+ * @param raw Raw JSON string read from session storage.
+ * @returns Valid normalized snapshot, or `null` when parsing fails validation.
+ */
 function parseStoredGameState(raw: string): GameStateSnapshot | null {
   const parsed = JSON.parse(raw) as Partial<GameStateSnapshot>;
 
@@ -113,6 +163,8 @@ function parseStoredGameState(raw: string): GameStateSnapshot | null {
 
 /**
  * Restores a previously saved game state from session storage when valid.
+ *
+ * @returns Restored snapshot or `null` when nothing valid is stored.
  */
 export function readStoredGameState(): GameStateSnapshot | null {
   const raw = sessionStorage.getItem(GAME_STATE_STORAGE_KEY);
@@ -130,6 +182,9 @@ export function readStoredGameState(): GameStateSnapshot | null {
 
 /**
  * Parses the stored board size and falls back to the default value when invalid.
+ *
+ * @param value Raw board-size value read from local storage.
+ * @returns Supported numeric board size, or the default fallback.
  */
 export function parseBoardSize(value: string | null): number {
   const parsed = Number(value);
