@@ -75,6 +75,8 @@ function applyStoredTheme(): void {
 
 /**
  * Reads the configured starting player from local storage.
+ *
+ * @returns Player that should start a new game.
  */
 function getInitialPlayer(): Player {
   const storedPlayer = localStorage.getItem("player");
@@ -109,7 +111,8 @@ function getPlayerIcon(player: Player): string {
  * @returns Theme-specific winner image or fallback pawn image.
  */
 function getWinnerImage(player: Player): string {
-  const images = WINNER_IMAGE_MAP_BY_THEME[RUNTIME.activeTheme] ?? WINNER_PAWN_MAP;
+  const images =
+    WINNER_IMAGE_MAP_BY_THEME[RUNTIME.activeTheme] ?? WINNER_PAWN_MAP;
   return images[player] ?? WINNER_PAWN_MAP[player];
 }
 
@@ -181,7 +184,10 @@ function resetTurnState(): void {
  * @param firstCard First matched card in the current turn.
  * @param secondCard Second matched card in the current turn.
  */
-function finalizeMatchedTurn(firstCard: CardModel, secondCard: CardModel): void {
+function finalizeMatchedTurn(
+  firstCard: CardModel,
+  secondCard: CardModel
+): void {
   firstCard.state = "matched";
   secondCard.state = "matched";
   RUNTIME.scores[RUNTIME.currentPlayer] += 1;
@@ -233,7 +239,10 @@ function hideCards(firstCard: CardModel, secondCard: CardModel): void {
  * @param firstCard First mismatched card in the turn.
  * @param secondCard Second mismatched card in the turn.
  */
-function finalizeMismatchTurn(firstCard: CardModel, secondCard: CardModel): void {
+function finalizeMismatchTurn(
+  firstCard: CardModel,
+  secondCard: CardModel
+): void {
   hideCards(firstCard, secondCard);
   resetTurnState();
   switchPlayer();

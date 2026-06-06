@@ -328,6 +328,8 @@ function shouldShowBackToGameButton(): boolean {
 
 /**
  * Uses the same condition as the back button to decide whether selections should be restored.
+ *
+ * @returns `true` when the persisted selection should be restored.
  */
 function shouldRestoreStoredSelection(): boolean {
   return shouldShowBackToGameButton();

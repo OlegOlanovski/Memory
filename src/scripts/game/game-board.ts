@@ -31,6 +31,10 @@ function shuffle<T>(items: T[]): T[] {
 
 /**
  * Builds a readable fallback label for generated card fronts.
+ *
+ * @param theme Theme name used to build the label text.
+ * @param index Zero-based position of the generated fallback card.
+ * @returns Readable text label embedded into the fallback SVG.
  */
 function buildFallbackCardLabel(theme: string, index: number): string {
   return `${theme.replace(" theme", "")} ${index + 1}`;
@@ -38,6 +42,10 @@ function buildFallbackCardLabel(theme: string, index: number): string {
 
 /**
  * Builds a simple inline SVG used when a themed front image is unavailable.
+ *
+ * @param accentColor Theme accent color used inside the fallback SVG.
+ * @param label Text label rendered into the fallback SVG.
+ * @returns Inline SVG markup string for the fallback card front.
  */
 function buildFallbackCardSvg(accentColor: string, label: string): string {
   return `
@@ -54,6 +62,10 @@ function buildFallbackCardSvg(accentColor: string, label: string): string {
 
 /**
  * Generates a data-URL fallback front image for a missing themed card asset.
+ *
+ * @param theme Theme name used to choose colors and text.
+ * @param index Zero-based position of the generated fallback card.
+ * @returns Data URL that can be used as the card front image source.
  */
 function createFallbackCardFront(theme: string, index: number): string {
   const accentColor =
@@ -134,6 +146,8 @@ function getRowDistribution(boardSize: number): number[] {
 
 /**
  * Creates the back face element for a single memory card.
+ *
+ * @returns Back-face span containing the hidden card illustration.
  */
 function createCardBackFace(): HTMLSpanElement {
   const cardBack = document.createElement("span");
@@ -150,6 +164,9 @@ function createCardBackFace(): HTMLSpanElement {
 
 /**
  * Creates the front face element for a single memory card.
+ *
+ * @param src Front-face image source for the card.
+ * @returns Front-face span containing the revealed card image.
  */
 function createCardFrontFace(src: string): HTMLSpanElement {
   const cardFront = document.createElement("span");
@@ -170,6 +187,9 @@ function createCardFrontFace(src: string): HTMLSpanElement {
 
 /**
  * Creates the inner flipping wrapper that contains both card faces.
+ *
+ * @param card Runtime card model used to build the front face.
+ * @returns Inner wrapper span containing both card faces.
  */
 function createCardInner(card: CardModel): HTMLSpanElement {
   const cardInner = document.createElement("span");
@@ -181,6 +201,9 @@ function createCardInner(card: CardModel): HTMLSpanElement {
 
 /**
  * Creates the interactive button element for a single card model.
+ *
+ * @param card Runtime card model used to build the button.
+ * @returns Button element representing one memory card on the board.
  */
 function createCardButton(card: CardModel): HTMLButtonElement {
   const button = document.createElement("button");
@@ -203,6 +226,9 @@ function resetBoard(boardElement: HTMLElement): void {
 
 /**
  * Creates one visual row for a slice of cards.
+ *
+ * @param cards Card models that should appear in the row.
+ * @returns Row element containing the rendered card buttons.
  */
 function createBoardRow(cards: CardModel[]): HTMLDivElement {
   const rowElement = document.createElement("div");
@@ -277,6 +303,9 @@ export function getCardById(id: number): CardModel | undefined {
 
 /**
  * Resolves the closest card button for a click target inside the board.
+ *
+ * @param target Event target inside the board container.
+ * @returns Closest matching card button or `null` when no card was hit.
  */
 function getClickedCardElement(target: HTMLElement): HTMLButtonElement | null {
   return target.closest(".memory-card") as HTMLButtonElement | null;

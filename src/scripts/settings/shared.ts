@@ -144,14 +144,17 @@ export const START_BUTTON = document.querySelector(
  * Default theme selection for the settings page.
  */
 export const DEFAULT_THEME = "Code vibes theme";
+
 /**
  * Default starting player selection.
  */
 export const DEFAULT_PLAYER = "Blue";
+
 /**
  * Default board size selection.
  */
 export const DEFAULT_BOARD_SIZE = "16";
+
 /**
  * Session storage flag that marks an unfinished game.
  */
@@ -182,6 +185,10 @@ export const PLAYER_ICONS_BY_THEME: Record<string, Record<string, string>> = {
 
 /**
  * Returns the checked input value or the provided fallback.
+ *
+ * @param inputs Radio inputs belonging to one selection group.
+ * @param fallbackValue Default value returned when no input is checked.
+ * @returns Checked input value or the provided fallback value.
  */
 export function getCheckedValue(
   inputs: NodeListOf<HTMLInputElement>,
@@ -193,6 +200,9 @@ export function getCheckedValue(
 
 /**
  * Marks the matching input as checked for a persisted value.
+ *
+ * @param inputs Radio inputs belonging to one selection group.
+ * @param value Value that should become checked.
  */
 export function syncCheckedInput(
   inputs: NodeListOf<HTMLInputElement>,
@@ -205,6 +215,8 @@ export function syncCheckedInput(
 
 /**
  * Lists the available theme option values from the DOM.
+ *
+ * @returns Array of theme values taken from the radio inputs.
  */
 export function getAvailableThemes(): string[] {
   return Array.from(THEME_INPUTS).map((input) => input.value);

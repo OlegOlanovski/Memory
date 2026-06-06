@@ -35,6 +35,8 @@ let arePlayAgainListenersBound = false;
 
 /**
  * Creates one animated confetti particle with randomized appearance.
+ *
+ * @returns Confetti element ready to be appended to the overlay.
  */
 function createConfettiPiece(): HTMLSpanElement {
   const piece = document.createElement("span");
